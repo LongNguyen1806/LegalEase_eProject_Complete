@@ -1,4 +1,12 @@
 *
-!private/
-!public/
+
+!*/
+
+!**/*.gitkeep
+!**/*.jpg
+!**/*.jpeg
+!**/*.png
+!**/*.gif
+!**/*.webp
+
 !.gitignore
