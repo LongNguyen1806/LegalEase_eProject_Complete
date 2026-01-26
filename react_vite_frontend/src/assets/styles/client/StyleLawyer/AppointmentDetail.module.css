@@ -1,0 +1,446 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.backBtn {
+  border: 1px solid #e2e8f0;
+  background: white;
+  cursor: pointer;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.statusBadge {
+  padding: 6px 16px;
+  border-radius: 25px;
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.statusPending {
+  background-color: #d2dae2;
+  color: #44556c;
+}
+
+.statusConfirmed {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.statusCompleted {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.statusCancelled {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.statusRefundPending {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.statusExpired {
+  background-color: #f8fafc;
+  color: #64748b;
+}
+
+.columns {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+.card {
+  flex: 1;
+  min-width: 400px;
+  background-color: rgb(190, 190, 190);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0c4a6e;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 12px;
+  margin-top: 20px;
+}
+
+.avatar {
+  width: 70px;
+  height: 70px;
+  background-color: #f1f5f9;
+  border-radius: 50%;
+  margin: 0 auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+}
+
+.feeText {
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+.earning {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  margin-top: 10px;
+  border-top: 2px dashed #e2e8f0;
+  color: #2ecc71;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.infoNote {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-style: italic;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: 1px solid #cbd5e1;
+}
+
+.totalHighlight {
+  font-size: 1.15rem;
+  color: #1e293b;
+  font-weight: 800;
+}
+
+.pendingHint {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-style: italic;
+  text-align: right;
+}
+
+.note {
+  background-color: #f8fafc;
+  padding: 18px;
+  border-radius: 10px;
+  color: #475569;
+  font-size: 14px;
+  font-style: italic;
+  margin-bottom: 25px;
+  border-left: 4px solid #cbd5e1;
+
+  /* FIX TRÀN */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+
+.infoRowSmall {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.paymentBox {
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid;
+  margin-top: 15px;
+}
+
+.successBox {
+  background-color: #f0f9ff;
+  border-color: #bae6fd;
+}
+
+.refundBox {
+  background-color: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.paymentSuccess {
+  font-weight: bold;
+  color: #16a34a;
+}
+
+.paymentRefundPending {
+  font-weight: bold;
+  color: #d97706;
+}
+
+.paymentRefunded {
+  font-weight: bold;
+  color: #64748b;
+}
+
+.paymentUnpaid {
+  font-weight: bold;
+  color: #ef4444;
+}
+
+.earning {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 800;
+  color: #0c4a6e;
+  font-size: 20px;
+}
+
+.refundNotice {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #9a3412;
+  line-height: 1.5;
+}
+
+.actions {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.confirmBtn {
+  width: 100%;
+  padding: 16px;
+  background-color: #1c357e;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.rejectBtn {
+  width: 100%;
+  padding: 14px;
+  background-color: transparent;
+  color: #ef4444;
+  border: 2px solid #ef4444;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.completeBtn {
+  width: 100%;
+  padding: 18px;
+  background-color: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.loading {
+  padding: 100px;
+  text-align: center;
+  color: #64748b;
+}
+
+@media (max-width: 1024px) {
+  .page {
+    padding: 16px;
+  }
+
+  .columns {
+    gap: 20px;
+  }
+
+  .card {
+    min-width: 0;
+    padding: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .statusBadge {
+    margin-left: auto;
+  }
+
+  .columns {
+    flex-direction: column;
+  }
+
+  .card {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .cardTitle {
+    font-size: 15px;
+  }
+
+  .infoRow,
+  .infoRowSmall {
+    font-size: 14px;
+  }
+
+  .earning {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 12px;
+  }
+
+  .backBtn {
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+
+  .statusBadge {
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+
+  .avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 26px;
+  }
+
+  .confirmBtn,
+  .rejectBtn,
+  .completeBtn {
+    font-size: 15px;
+    padding: 14px;
+  }
+}
+
+.textWrap {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.avatarContainer {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #f1f5f9;
+}
+
+.customerAvatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.customerContactInfo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.customerContactInfo p {
+  margin: 4px 0;
+}
+
+.emailText {
+  color: #64748b;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.emailText svg {
+  color: #0c4a6e;
+}
+
+.addressText {
+  flex: 1;
+  text-align: right;
+  color: #1e293b;
+  font-weight: 500;
+  line-height: 1.5;
+  padding-left: 20px;
+
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.infoRow svg {
+  color: #0c4a6e;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.card h4 {
+  text-align: center;
+  font-size: 18px;
+  color: #0f172a;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.card {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0;
+}
+
+@media (max-width: 480px) {
+  .avatarContainer {
+    width: 75px;
+    height: 75px;
+  }
+
+  .addressText {
+    font-size: 13px;
+  }
+
+  .emailText {
+    font-size: 13px;
+  }
+}

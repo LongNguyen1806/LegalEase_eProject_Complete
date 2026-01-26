@@ -1,0 +1,451 @@
+.homepage {
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  width: 100%;
+  background-color: #f8fafc;
+  color: #334155;
+}
+
+.hero {
+  background: linear-gradient(135deg, #1c357e 0%, #172554 100%);
+  color: white;
+  padding: 100px 20px 120px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.heroTitle {
+  font-size: 48px;
+  font-weight: 800;
+  margin-bottom: 15px;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  font-family: "Playfair Display", serif;
+}
+
+.heroSubtitle {
+  font-size: 18px;
+  color: #94a3b8;
+  max-width: 600px;
+  margin-bottom: 50px;
+  line-height: 1.6;
+}
+
+.searchBox {
+  background: white;
+  padding: 8px;
+  border-radius: 8px;
+  max-width: 850px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  gap: 0;
+}
+
+.searchInput {
+  flex: 2;
+  position: relative;
+  height: 55px;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+}
+
+.searchInput input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 0 20px 0 50px;
+  font-size: 16px;
+  color: #1e293b;
+  border-radius: 8px 0 0 8px;
+}
+
+.searchBoxIcon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #1c357e;
+  font-size: 20px;
+  z-index: 10;
+}
+
+.searchSelect {
+  flex: 1.2;
+  position: relative;
+  height: 55px;
+  display: flex;
+  align-items: center;
+}
+
+.searchSelect select {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 0 20px 0 45px;
+  font-size: 16px;
+  color: #1e293b;
+  background-color: transparent;
+  cursor: pointer;
+  appearance: none;
+}
+
+.searchBtn {
+  background-color: #1c357e;
+  color: white;
+  border: none;
+  height: 55px;
+  padding: 0 40px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 6px;
+  margin-left: 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.searchBtn:hover {
+  background-color: #22479c;
+  transform: translateY(-1px);
+}
+
+.sectionContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 20px;
+}
+
+.newsSection {
+  background-color: #fff;
+  width: 100%;
+  max-width: 100% !important;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.sectionHeader h2 {
+  font-size: 36px;
+  color: #1c357e;
+  font-weight: 800;
+  margin-bottom: 10px;
+  font-family: "Playfair Display", serif;
+}
+
+.sectionSub {
+  font-size: 16px;
+  color: #64748b;
+}
+
+.lawyerGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.lawyerCard {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+  border: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+}
+
+.lawyerCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.lawyerImageWrapper {
+  width: 100%;
+  height: 280px;
+  position: relative;
+  overflow: hidden;
+}
+
+.lawyerImageWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+  padding: 6%;
+  object-position: center top;
+  border-radius: 40px;
+}
+
+.lawyerCard:hover .lawyerImageWrapper img {
+  transform: scale(1.05);
+}
+
+.proBadge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: #f59e0b;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+
+.lawyerInfo {
+  padding: 25px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.lawyerInfo h3 {
+  font-size: 20px;
+  color: #1e293b;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.tagsList {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.tagItem {
+  background-color: #e0f2fe;
+  color: #0284c7;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.lawyerMeta {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  color: #64748b;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.star {
+  color: #f59e0b;
+}
+
+.btnCardAction {
+  display: block;
+  width: 100%;
+  padding: 12px 0;
+  background-color: #1c357e;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 6px;
+  margin-top: auto;
+  transition: background 0.2s;
+}
+
+.btnCardAction:hover {
+  background-color: #22479c;
+}
+
+.newsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.newsCard {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.newsThumb {
+  width: 100%;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.newsThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.newsCard:hover .newsThumb img {
+  transform: scale(1.05);
+}
+
+.newsBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.newsMeta {
+  font-size: 12px;
+  color: #94a3b8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.newsTypeTag {
+  color: #1c357e;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.newsDate {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.newsTitle {
+  font-size: 18px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.newsTitle a {
+  color: #1e293b;
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.2s;
+}
+
+.newsTitle a:hover {
+  color: #1c357e;
+}
+
+.newsExcerpt {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.newsReadMore {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1c357e;
+  text-decoration: none;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.viewAllContainer {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.btnViewAll {
+  display: inline-block;
+  padding: 12px 30px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #1e293b;
+  font-weight: 600;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btnViewAll:hover {
+  border-color: #1c357e;
+  color: #1c357e;
+}
+
+@media (max-width: 900px) {
+  .lawyerGrid,
+  .newsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .hero {
+    padding: 60px 20px;
+  }
+  .heroTitle {
+    font-size: 32px;
+  }
+
+  .searchBox {
+    flex-direction: column;
+    padding: 15px;
+    height: auto;
+  }
+
+  .searchInput,
+  .searchSelect,
+  .searchBtn {
+    width: 100%;
+    border-right: none;
+    padding: 20px 20px 20px 50px;
+    margin: 0;
+    height: 50px;
+  }
+
+  .searchInput {
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .searchBtn {
+    margin-top: 10px;
+  }
+
+  .lawyerGrid,
+  .newsGrid {
+    grid-template-columns: 1fr;
+  }
+}

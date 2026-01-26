@@ -1,0 +1,392 @@
+.pgWrapper {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: "Inter", sans-serif;
+}
+
+.pgHeaderNav {
+  max-width: 1100px;
+  margin: 0 auto 20px;
+}
+
+.pgBackLink {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.pgMainLayout {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.pgLeftColumn {
+  flex: 1.8;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.pgSectionTitle {
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: #1e293b;
+}
+
+.pgSectionSubtitle {
+  color: #64748b;
+  margin-bottom: 30px;
+}
+
+.pgMethodSection {
+  margin-bottom: 25px;
+}
+
+.pgLabel {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #475569;
+}
+
+.pgMethodGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+}
+
+.pgMethodItem {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pgMethodItem:hover {
+  border-color: #3b82f6;
+}
+
+.pgMethodItem.active {
+  border-color: #1c357e;
+  background-color: #eff6ff;
+  box-shadow: 0 0 0 1px #1c357e;
+}
+
+.pgMethodIcon {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.pgMethodName {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pgCardSimulated {
+  background: #f1f5f9;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.pgFormRow {
+  display: flex;
+  gap: 15px;
+}
+
+.pgFormGroup {
+  margin-bottom: 15px;
+  flex: 1;
+}
+
+.pgInputDisabled,
+.pgInputFilled {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: white;
+  color: #334155;
+  font-size: 14px;
+}
+
+.pgInputDisabled {
+  background-color: #f8fafc;
+  cursor: not-allowed;
+}
+
+.pgContactSection {
+  margin-top: 20px;
+}
+
+.pgSubTitle {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #1e293b;
+}
+
+.pgSecurityNote {
+  font-size: 13px;
+  color: #059669;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.pgMainPayBtn {
+  width: 100%;
+  padding: 16px;
+  background: #1c357e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.pgMainPayBtn:hover {
+  background: #1d4ed8;
+}
+
+.pgMainPayBtn.loading {
+  background: #94a3b8;
+  cursor: wait;
+}
+
+.pgRightColumn {
+  flex: 1;
+  position: sticky;
+  top: 20px;
+  min-width: 350px;
+  max-width: 400px;
+}
+
+.pgSummaryCard {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+}
+
+.pgSummaryTitle {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+.pgLawyerMiniProfile {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.pgLawyerMiniProfile img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.pgLawyerName {
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.pgLawyerContact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.pgLawyerContact span {
+  font-size: 11px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pgLawyerSpec {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.pgDetailList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.pgDetailItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.pgDetailItem span {
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.pgDetailItem strong {
+  text-align: right;
+  color: #1e293b;
+  word-break: break-word;
+}
+
+.pgDetailItemNote {
+  margin-top: 15px;
+  padding: 12px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+}
+
+.pgDetailItemNote span {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 5px;
+}
+
+.pgDetailItemNote p {
+  margin: 0;
+  font-size: 14px;
+  color: #1e293b;
+  line-height: 1.5;
+  font-style: italic;
+
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+.pgHr {
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  margin: 20px 0;
+}
+
+.pgPriceBreakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pgPriceItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #475569;
+}
+
+.pgTotalRow {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.pgTotalRow span {
+  font-weight: 700;
+}
+
+.pgFinalPrice {
+  color: #1c357e;
+  font-size: 18px;
+}
+
+.pgPolicyBox {
+  margin-top: 20px;
+  padding: 15px;
+  background: #fffbeb;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #92400e;
+}
+
+.pgModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.pgSuccessModal {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  animation: scaleIn 0.3s ease-out;
+}
+
+.pgSuccessIcon {
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.pgBtnDone {
+  margin-top: 20px;
+  padding: 12px 25px;
+  background: #1c357e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .pgMainLayout {
+    flex-direction: column;
+  }
+  .pgRightColumn {
+    width: 100%;
+    order: -1;
+  }
+}

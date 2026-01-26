@@ -1,0 +1,123 @@
+.system-logs {
+  padding: 20px;
+}
+
+.logs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.logs-header h1 {
+  margin: 0;
+}
+
+.btn-refresh {
+  padding: 8px 16px;
+  background: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-refresh:hover {
+  background: #1677d2;
+}
+
+.logs-desc {
+  margin: 12px 0 16px;
+  color: #666;
+}
+
+.logs-table-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.logs-table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+thead {
+  background: #333;
+  color: white;
+}
+
+th,
+td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.center {
+  text-align: center;
+}
+
+.muted {
+  color: #999;
+}
+
+tr.even {
+  background: #ffffff;
+}
+
+tr.odd {
+  background: #f9f9f9;
+}
+
+.admin-email {
+  font-weight: bold;
+  color: #1890ff;
+}
+
+.log-action.success {
+  color: #22c55e;
+  font-weight: 500;
+}
+
+.log-action.danger {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.log-action.warning {
+  color: #f59e0b;
+  font-weight: 500;
+}
+
+.empty {
+  text-align: center;
+  padding: 30px;
+  color: #888;
+}
+
+.logs-loading {
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .system-logs {
+    padding: 12px;
+  }
+
+  .logs-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  table {
+    font-size: 14px;
+  }
+}

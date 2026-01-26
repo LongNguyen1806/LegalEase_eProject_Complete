@@ -1,0 +1,272 @@
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.page {
+  padding: 12px;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.title {
+  margin-bottom: 20px;
+  color: #1e293b;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  animation: fadeInLeft 0.6s ease-out;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+.tabs {
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  transition: opacity 0.3s ease;
+}
+
+.tabsLoading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.tab {
+  padding: 12px 24px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #64748b;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  transition:
+    color 0.3s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.tab:hover {
+  color: #1c357e;
+  background-color: #f8fafc;
+}
+
+.activeTab {
+  color: #1c357e;
+  font-weight: 700;
+  border-bottom-color: #1c357e;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.opacityLow {
+  opacity: 0.5;
+  transform: scale(0.995);
+}
+
+.table {
+  width: 100%;
+  min-width: 820px;
+  border-collapse: collapse;
+}
+
+.table thead {
+  background: #f8fafc;
+}
+
+.table th {
+  padding: 15px 20px;
+  text-align: left;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.table td {
+  padding: 15px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background-color: #fcfdfe;
+}
+
+.customerName {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.customerPhone {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.serviceBadge {
+  background: #eff6ff;
+  color: #1c357e;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.time {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.date {
+  font-size: 12px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.statusBadge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.statusPending {
+  background-color: #fef9c3;
+  color: #a16207;
+}
+.statusConfirmed {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+.statusCompleted {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+.statusCancelled {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+.statusRefundPending {
+  background-color: #ffedd5;
+  color: #9a3412;
+}
+.statusExpired {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.actionCell {
+  white-space: nowrap;
+}
+
+.detailLink {
+  color: #1c357e;
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.detailLink:hover {
+  color: #2563eb;
+  transform: translateX(3px);
+}
+
+.loading {
+  padding: 40px;
+  text-align: center;
+  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.empty {
+  padding: 60px;
+  text-align: center;
+  color: #94a3b8;
+  animation: fadeInUp 0.5s ease;
+}
+
+@media (max-width: 768px) {
+  .tab {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+
+  .table {
+    min-width: 720px;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 18px;
+  }
+
+  .tab {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .table {
+    min-width: 650px;
+  }
+
+  .table th,
+  .table td {
+    padding: 12px 14px;
+  }
+}

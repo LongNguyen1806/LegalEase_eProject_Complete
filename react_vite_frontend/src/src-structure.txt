@@ -1,0 +1,48 @@
+Folder PATH listing for volume Data
+Volume serial number is 3AE5-2C4F
+D:.
+¦   App.jsx
+¦   main.jsx
+¦   src-structure.txt
+¦   
++---api
+¦       apiAxios.js
+¦       
++---assets
+¦   +---styles
+¦       ¦   global.css
+¦       ¦   
+¦       +---admin
+¦       ¦       admin.css
+¦       ¦       
+¦       +---client
+¦       +---images
++---components
+¦   +---common
+¦   +---layout
+¦           Header.jsx
+¦           
++---layouts
+¦   +---layout_admin
+¦   ¦       AdminLayout.jsx
+¦   ¦       
+¦   +---layout_client
+¦           MainLayout.jsx
+¦           
++---pages
+    +---admin
+    ¦       ContentCMS.jsx
+    ¦       Dashboard.jsx
+    ¦       Login.jsx
+    ¦       QAManagement.jsx
+    ¦       RevenueManagement.jsx
+    ¦       SystemLogs.jsx
+    ¦       UserDetail.jsx
+    ¦       UserManagement.jsx
+    ¦       Verification.jsx
+    ¦       
+    +---public
+            HomePage.jsx
+            LawyerDetail.jsx
+            WriteReview.jsx
+            

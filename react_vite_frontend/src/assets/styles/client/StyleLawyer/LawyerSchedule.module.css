@@ -1,0 +1,361 @@
+@keyframes fadeInPage {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: "Segoe UI", sans-serif;
+  animation: fadeInPage 0.5s ease-out;
+}
+
+.pageTitle {
+  margin-bottom: 25px;
+  color: #1e293b;
+}
+
+.card {
+  background-color: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 25px;
+  transition: all 0.3s ease;
+}
+
+.cardCreate {
+  border-top: 6px solid #10b981;
+}
+
+.cardEdit {
+  border-top: 6px solid #f59e0b;
+}
+
+.cardTitle {
+  margin-bottom: 20px;
+  color: #334155;
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  align-items: flex-end;
+}
+
+.formGroup {
+  flex: 1;
+  min-width: 280px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #475569;
+  font-size: 14px;
+}
+
+.input {
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  width: 100%;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.input:focus {
+  border-color: #1c357e;
+  box-shadow: 0 0 0 3px rgba(28, 53, 126, 0.1);
+}
+
+.timeGroup {
+  width: 140px;
+}
+
+.datePicker {
+  width: 100%;
+}
+
+.editingDate {
+  padding: 10px;
+  background-color: #fff7ed;
+  border: 1px solid #ffedd5;
+  border-radius: 6px;
+  font-weight: bold;
+  color: #c2410c;
+  animation: fadeInScale 0.3s ease;
+}
+
+.actionGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.submitBtn {
+  padding: 11px 25px;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s active;
+}
+
+.submitBtn:active {
+  transform: scale(0.98);
+}
+
+.btnCreate {
+  background-color: #10b981;
+}
+
+.btnEdit {
+  background-color: #f59e0b;
+}
+
+.cancelBtn {
+  padding: 11px 20px;
+  background-color: #94a3b8;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tabBtn {
+  padding: 10px 25px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #f1f5f9;
+  color: #64748b;
+  transition: all 0.3s ease;
+}
+
+.tabActive {
+  background-color: #1c357e;
+  color: white;
+  box-shadow: 0 2px 4px rgba(28, 53, 126, 0.2);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  animation: fadeInPage 0.6s ease-out;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead tr {
+  border-bottom: 2px solid #f1f5f9;
+  text-align: left;
+  color: #64748b;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.table th,
+.table td {
+  padding: 15px;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid #f8fafc;
+  transition: background-color 0.2s ease;
+}
+
+.timeSlot {
+  font-weight: 600;
+  color: #1c357e;
+}
+
+.badgeBooked,
+.badgeExpired,
+.badgeAvailable {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.badgeBooked {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.badgeExpired {
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+.badgeAvailable {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.rowActions {
+  display: flex;
+  gap: 8px;
+}
+
+.editBtn,
+.deleteBtn {
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.editBtn {
+  background-color: #eff6ff;
+  color: #1c357e;
+  border: 1px solid #bfdbfe;
+}
+
+.deleteBtn {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.noAction {
+  color: #cbd5e1;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  animation: fadeInScale 0.5s ease infinite alternate;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px;
+  color: #94a3b8;
+  animation: fadeInPage 0.4s ease;
+}
+
+@media (max-width: 1024px) {
+  .page {
+    padding: 16px;
+  }
+  .form {
+    gap: 20px;
+  }
+  .timeGroup {
+    width: 160px;
+  }
+  .tabs {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .pageTitle {
+    font-size: 20px;
+  }
+  .card {
+    padding: 18px;
+  }
+  .form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .formGroup,
+  .timeGroup {
+    width: 100%;
+    min-width: unset;
+  }
+  .actionGroup {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .submitBtn,
+  .cancelBtn {
+    width: 100%;
+    text-align: center;
+  }
+  .tabBtn {
+    flex: 1;
+    text-align: center;
+  }
+  .table th,
+  .table td {
+    padding: 12px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 12px;
+  }
+  .pageTitle {
+    font-size: 18px;
+  }
+  .cardTitle {
+    font-size: 16px;
+  }
+  .label {
+    font-size: 13px;
+  }
+  .timeSlot {
+    font-size: 13px;
+  }
+  .badgeBooked,
+  .badgeAvailable,
+  .badgeExpired {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+  .editBtn,
+  .deleteBtn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  .rowActions {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .noAction {
+    font-size: 11px;
+  }
+}

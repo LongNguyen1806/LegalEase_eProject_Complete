@@ -1,0 +1,414 @@
+.container {
+  padding: 30px;
+  background-color: #f8faff;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 40px;
+}
+
+.titleGroup h1 {
+  color: #1c357e;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 5px;
+}
+
+.titleGroup p {
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.controls {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.tabs {
+  background: #e2e8f0;
+  padding: 4px;
+  border-radius: 12px;
+  display: flex;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #64748b;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.3s;
+}
+
+.activeTab {
+  background: white !important;
+  color: #1c357e !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.select {
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  outline: none;
+  font-weight: 500;
+  background-color: white;
+}
+
+/* SUMMARY CARDS */
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.card {
+  padding: 25px;
+  border-radius: 20px;
+  color: white;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.greenCard {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+.blueCard {
+  background: linear-gradient(135deg, #1c357e, #3b82f6);
+}
+.darkCard {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+}
+
+.card h2 {
+  font-size: 1.8rem;
+  margin: 10px 0;
+  font-weight: 800;
+}
+
+.card p {
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.card small {
+  opacity: 0.8;
+  font-size: 0.8rem;
+}
+
+.cardMain {
+  margin-bottom: 10px;
+}
+
+.breakdown {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.breakdownItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.breakdownItem span {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.breakdownItem b {
+  font-size: 0.95rem;
+}
+
+.muted {
+  opacity: 0.6;
+  font-weight: 400;
+}
+
+.tableSection {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tableHeader {
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.tableHeader h3 {
+  color: #1c357e;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto; 
+  -webkit-overflow-scrolling: touch;
+}
+
+.tableWrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px; 
+}
+
+.tableWrapper th {
+  text-align: left;
+  padding: 15px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap; 
+}
+
+.tableWrapper td {
+  padding: 15px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.95rem;
+  color: #334155;
+  white-space: nowrap; 
+}
+
+.miniBreakdown {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.miniRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.miniRow span {
+  opacity: 0.8;
+  font-weight: 400;
+}
+
+.miniRow b {
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+}
+
+.cardFooter {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.7rem;
+  font-style: italic;
+  opacity: 0.5;
+  text-align: right;
+}
+
+.infoIcon {
+  color: rgba(255, 255, 255, 0.6);
+  cursor: help;
+  transition: 0.2s;
+}
+
+.infoIcon:hover {
+  color: white;
+}
+
+.mono {
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+  color: #1c357e;
+}
+
+.amount {
+  text-align: right;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.netHighlight {
+  color: #1c357e;
+  background-color: #f0f4ff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  display: inline-block;
+}
+
+.refundValue {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.feeText {
+  color: #475569;
+  font-weight: 600;
+  text-align: right;
+}
+
+.tagGreen {
+  background: #dcfce7;
+  color: #166534;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.tagBlue {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.btnRefund {
+  background: #1c357e;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.btnRefund:hover {
+  background: #14265a;
+  box-shadow: 0 4px 8px rgba(28, 53, 126, 0.2);
+}
+
+.pagination {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.pagination button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 15px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination button:not(:disabled):hover {
+  background: #f1f5f9;
+}
+
+.loading {
+  padding: 100px;
+  text-align: center;
+  color: #1c357e;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 1024px) {
+  .summaryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .darkCard {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .controls {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .tabs {
+    overflow-x: auto;
+  }
+  .summaryGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .darkCard {
+    grid-column: span 1;
+  }
+  .tableSection {
+    padding: 15px;
+    border-radius: 12px;
+  }
+  .tableWrapper {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+  .tableWrapper table {
+    min-width: 750px; 
+  }
+  .titleGroup h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabs button {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  .card h2 {
+    font-size: 1.5rem;
+  }
+  .btnRefund {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}

@@ -1,0 +1,259 @@
+.verification {
+  padding: 24px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.headerFlex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.verification h1 {
+  margin-bottom: 8px;
+  color: #1f2937;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.verificationDesc {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.refreshBtn {
+  padding: 8px 16px;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #374151;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.refreshBtn:hover {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.verificationLoading {
+  padding: 40px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 16px;
+}
+
+.verificationEmpty {
+  background: white;
+  padding: 60px;
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding-bottom: 10px;
+}
+
+.verificationTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 1000px;
+}
+
+.verificationTable th {
+  background: #001529;
+  color: white;
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.verificationTable td {
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #374151;
+  background: white;
+}
+
+.verificationTable th:last-child,
+.verificationTable td:last-child {
+  position: sticky;
+  right: 0;
+  z-index: 10;
+  background: white;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.05);
+  border-left: 1px solid #f3f4f6;
+}
+
+.verificationTable th:last-child {
+  background: #001529;
+}
+
+.center {
+  text-align: center;
+}
+
+.lawyerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lawyerInfo strong {
+  color: #111827;
+  font-size: 15px;
+}
+
+.badgeId {
+  display: inline-block;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  width: fit-content;
+  border: 1px solid #c7d2fe;
+}
+
+.metaInfo p {
+  margin: 0 0 6px 0;
+  line-height: 1.4;
+  font-size: 13px;
+}
+.timeAgo {
+  color: #9ca3af;
+  font-size: 12px;
+  font-style: italic;
+  margin-top: 8px !important;
+}
+
+.docGrid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.docThumbnail {
+  width: 70px;
+  height: 70px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  background: #f9fafb;
+  transition: all 0.2s ease;
+}
+
+.docThumbnail:hover {
+  transform: translateY(-2px);
+  border-color: #1c357e;
+}
+
+.zoomIcon {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.docThumbnail:hover .zoomIcon {
+  opacity: 1;
+}
+
+/* --- ACTIONS --- */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  min-width: 100px;
+}
+
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  font-size: 13px;
+  transition: background 0.2s;
+  width: 100%;
+  text-transform: uppercase;
+}
+
+.approve {
+  background: #10b981;
+}
+.approve:hover {
+  background: #059669;
+}
+.reject {
+  background: #ef4444;
+}
+.reject:hover {
+  background: #dc2626;
+}
+
+.imageModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.imageModalContent {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+.imageModalContent img {
+  max-width: 100%;
+  max-height: 85vh;
+  border-radius: 8px;
+  object-fit: contain;
+}
+.closeBtn {
+  margin-top: 15px;
+  background: white;
+  border: none;
+  padding: 8px 24px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}

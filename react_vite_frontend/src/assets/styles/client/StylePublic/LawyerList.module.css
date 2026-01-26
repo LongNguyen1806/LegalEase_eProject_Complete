@@ -1,0 +1,389 @@
+.lawyerListPage {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  box-sizing: border-box;
+}
+
+.lawyerListContainer {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.listHeader {
+  margin-bottom: 30px;
+}
+
+.listHeader h2 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.listHeader p {
+  color: #64748b;
+  font-size: 16px;
+}
+
+.filterBar {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  align-items: stretch;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.filterBar *,
+.filterBar *::before,
+.filterBar *::after {
+  box-sizing: border-box;
+}
+
+.searchGroup {
+  flex: 2;
+  display: flex;
+  gap: 10px;
+  min-width: 300px;
+}
+
+.inputWithIcon {
+  position: relative;
+  flex: 1;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 16px;
+}
+
+.inputWithIcon input {
+  width: 100%;
+  padding: 12px 12px 12px 42px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  outline: none;
+  font-size: 15px;
+  transition: border-color 0.2s;
+}
+
+.inputWithIcon input:focus {
+  border-color: #1c357e;
+  box-shadow: 0 0 0 3px rgba(28, 53, 126, 0.1);
+}
+
+.btnSearchTrigger {
+  padding: 0 25px;
+  background-color: #1c357e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.selectGroup {
+  flex: 1.5;
+  display: flex;
+  gap: 10px;
+  min-width: 320px;
+}
+
+.filterSelect {
+  flex: 1;
+  padding: 0 12px;
+  height: 46px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: white;
+  outline: none;
+  font-size: 14px;
+  color: #475569;
+  cursor: pointer;
+  max-width: 50%;
+}
+
+.lawyerListRows {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lawyerRowItem {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  gap: 24px;
+  border: 1px solid #e2e8f0;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  position: relative;
+  min-height: 200px;
+}
+
+.featuredRow {
+  background-color: #f0f9ff !important;
+  border: 1px solid #bae6fd !important;
+}
+
+.featuredRow::before {
+  content: "FEATURED EXPERT";
+  position: absolute;
+  top: 10px;
+  right: 24px;
+  font-size: 9px;
+  font-weight: 800;
+  color: #0369a1;
+  letter-spacing: 1px;
+}
+
+.rowColVisual {
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.avatarWrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.avatarWrapper img {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid #f1f5f9;
+}
+
+.proBadgeCrown {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: #fbbf24;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+  border: 2px solid white;
+}
+
+.rowColInfo {
+  flex: 1;
+}
+
+.lawyerNameTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px 0;
+}
+
+.verifiedIcon {
+  color: #3b82f6;
+  font-size: 16px;
+}
+
+.rowRatingInline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.starIcon {
+  color: #f59e0b;
+}
+
+.infoDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detailItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #475569;
+  font-size: 14px;
+}
+
+.detailIcon {
+  margin-top: 3px;
+  color: #1c357e;
+  flex-shrink: 0;
+}
+
+.bioSummary {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: #64748b;
+  margin: 0;
+}
+
+.rowColActions {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #f1f5f9;
+  padding-left: 24px;
+  align-items: stretch;
+}
+
+.ratingScoreBox {
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.scoreLabel {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.btnBookNow {
+  background-color: #1c357e;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.1);
+}
+
+.btnBookNow:hover {
+  background-color: #22479c;
+  transform: translateY(-1px);
+}
+
+.btnViewProfile {
+  background: white;
+  color: #1c357e;
+  text-align: center;
+  padding: 11px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  border: 1.5px solid #1c357e;
+  transition: all 0.2s;
+}
+
+.btnViewProfile:hover {
+  background-color: #f0f4ff;
+  color: #152961;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 40px;
+}
+
+.pageBtn {
+  padding: 10px 18px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #1c357e;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.activePage {
+  background: #1c357e !important;
+  color: white !important;
+  border-color: #1c357e !important;
+}
+
+@media (max-width: 768px) {
+  .lawyerRowItem {
+    flex-direction: column;
+    padding: 20px;
+    align-items: center;
+  }
+  .rowColVisual {
+    margin-bottom: 15px;
+  }
+  .rowColActions {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #f1f5f9;
+    padding: 20px 0 0 0;
+    margin-top: 15px;
+  }
+  .actionButtons {
+    margin-top: 10px;
+  }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #1c357e;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.dimmed {
+  opacity: 0.5;
+  pointer-events: none;
+}

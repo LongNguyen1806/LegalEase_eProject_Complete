@@ -1,0 +1,386 @@
+.support-wrapper {
+  background: #f8fafc;
+  min-height: 100vh;
+  padding: 40px 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+.support-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.support-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.support-header h1 {
+  margin-bottom: 8px;
+  color: #1f2937;
+  font-size: 32px;
+}
+
+.support-header p {
+  color: #6b7280;
+}
+
+.support-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 600px;
+  margin: 20px auto 0;
+  background: white;
+  border-radius: 50px;
+  padding: 5px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+}
+
+.support-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 12px 20px;
+  font-size: 15px;
+  background: transparent;
+  border-radius: 50px;
+  color: #374151;
+}
+
+.support-search-btn {
+  background-color: #1c357e;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.support-search-btn:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.support-search-loading {
+  position: absolute;
+  right: 120px;
+  font-size: 14px;
+}
+
+.support-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.support-tabs button {
+  padding: 10px 30px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  background: white;
+  color: #4b5563;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.support-tabs button.active {
+  background: #1c357e;
+  color: white;
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+}
+
+.ask-box {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.ask-box h3 {
+  margin-bottom: 15px;
+  color: #111827;
+}
+
+.ask-input-title,
+.ask-box textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-family: inherit;
+  font-size: 14px;
+  transition:
+    border 0.2s,
+    box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.ask-input-title {
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.ask-box textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.ask-input-title:focus,
+.ask-box textarea:focus {
+  outline: none;
+  border-color: #1c357e;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.ask-box button {
+  margin-top: 15px;
+  padding: 10px 25px;
+  background: #1e3a8a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ask-box button:hover {
+  background: #1e40af;
+}
+
+.ask-box button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.login-reminder {
+  text-align: center;
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 8px;
+  color: #4b5563;
+  border: 1px dashed #d1d5db;
+}
+
+.login-reminder a {
+  color: #1c357e;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-reminder.lawyer-view {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+  border-style: solid;
+}
+
+.qa-item {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid transparent;
+  transition: box-shadow 0.2s;
+}
+
+.qa-item:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.qa-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.qa-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.qa-content {
+  font-size: 15px;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.btn-toggle-answers {
+  background-color: #eff6ff;
+  color: #1c357e;
+  border: 1px solid #bfdbfe;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-toggle-answers:hover {
+  background-color: #dbeafe;
+  border-color: #93c5fd;
+}
+
+.answer-list {
+  margin-top: 15px;
+  padding-left: 10px;
+  border-left: 2px solid #e5e7eb;
+}
+
+.answer-item {
+  display: flex;
+  gap: 15px;
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 15px;
+}
+
+.lawyer-qa-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e2e8f0;
+}
+
+.answer-content-box {
+  flex: 1;
+}
+
+.lawyer-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e40af;
+  margin-bottom: 4px;
+}
+
+.answer-content-box p {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.no-answer {
+  font-style: italic;
+  color: #9ca3af;
+  padding: 10px;
+}
+
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.library-card {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+  border: 1px solid #e5e7eb;
+}
+
+.library-card:hover {
+  transform: translateY(-5px);
+}
+
+.library-card h3 {
+  font-size: 18px;
+  margin: 10px 0;
+  color: #1f2937;
+}
+
+.library-card p {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.library-card button {
+  background: none;
+  border: none;
+  color: #1c357e;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.library-card button:hover {
+  text-decoration: underline;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.badge.News {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+.badge.Guide {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+.badge.Article {
+  background: #f0f9ff;
+  color: #075985;
+  border: 1px solid #bae6fd;
+}
+
+.dimmed {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.empty-box {
+  text-align: center;
+  padding: 60px;
+  background: white;
+  border-radius: 12px;
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+.loading-text {
+  text-align: center;
+  color: #6b7280;
+  font-size: 18px;
+  margin-top: 50px;
+}

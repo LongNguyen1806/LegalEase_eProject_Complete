@@ -1,0 +1,92 @@
+:root {
+  --primary-bg: #001529;
+  --menu-active: #1890ff;
+  --body-bg: #f0f2f5;
+  --card-bg: #ffffff;
+  --text-primary: #262626;
+  --text-secondary: #8c8c8c;
+  --border-radius: 8px;
+
+  --btn-primary: #1890ff;
+  --btn-success: #52c41a;
+  --btn-danger: #ff4d4f;
+  --btn-warning: #faad14;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--body-bg);
+}
+
+.swal2-popup {
+  background-color: #f8fafc !important;
+  border-radius: 24px !important;
+  padding: 2rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08) !important;
+  width: 32em !important;
+}
+
+.swal2-icon {
+  display: none !important;
+}
+
+.swal2-title {
+  text-align: left !important;
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  color: #0f172a !important;
+  padding: 0 !important;
+  margin-bottom: 1rem !important;
+}
+
+.swal2-html-container {
+  text-align: left !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #475569 !important;
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+}
+
+.swal2-actions {
+  justify-content: flex-end !important;
+  width: 100% !important;
+  margin-top: 2rem !important;
+}
+
+.swal2-confirm {
+  background-color: #10b981 !important;
+  color: white !important;
+  border-radius: 100px !important;
+  padding: 10px 24px !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  order: 2;
+  margin-left: 12px !important;
+}
+
+.swal2-cancel {
+  background-color: transparent !important;
+  color: #64748b !important;
+  border-radius: 100px !important;
+  padding: 10px 24px !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  order: 1;
+}
+
+.swal2-confirm:hover {
+  background-color: #059669 !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2) !important;
+}
+
+.swal2-cancel:hover {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+}

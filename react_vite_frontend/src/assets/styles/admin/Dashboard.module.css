@@ -1,0 +1,136 @@
+.dashboard {
+  padding: 20px;
+}
+
+.dashboardTitle {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #1f1f1f;
+}
+
+.dashboardLoading {
+  padding: 20px;
+  color: #555;
+}
+
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.dashboardCard {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.dashboardCard:hover {
+  transform: translateY(-2px);
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.cardContent p {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+  color: #595959;
+}
+
+.textSuccess {
+  color: #389e0d;
+}
+.textWarning {
+  color: #faad14;
+}
+
+.dashboardCardAlert {
+  background: #fff1f0;
+  border-color: #ffccc7;
+  cursor: pointer;
+}
+
+.dashboardCardAlert:hover {
+  transform: scale(1.02);
+}
+
+.alertTitle {
+  color: #cf1322;
+  margin: 0;
+}
+.alertSubtitle {
+  color: #555;
+  margin: 6px 0 16px;
+}
+
+.alertFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.alertFooter h1 {
+  font-size: 42px;
+  margin: 0;
+  color: #cf1322;
+}
+
+.alertBadge {
+  background: #cf1322;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.skeleton {
+  background: #f5f5f5;
+  background: linear-gradient(90deg, #f5f5f5 25%, #e8e8e8 50%, #f5f5f5 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeletonTitle {
+  height: 24px;
+  margin-bottom: 15px;
+  width: 60%;
+}
+.skeletonText {
+  height: 18px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 10px;
+  }
+  .dashboardTitle {
+    font-size: 18px;
+  }
+  .alertFooter h1 {
+    font-size: 32px;
+  }
+}

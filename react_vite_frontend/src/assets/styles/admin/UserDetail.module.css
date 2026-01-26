@@ -1,0 +1,248 @@
+.userdetail {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #334155;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.userdetailLoading {
+  padding: 50px;
+  text-align: center;
+  color: #64748b;
+}
+
+.userdetailHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.userdetailHeader h1 {
+  font-size: 22px;
+  color: #1e293b;
+  margin: 0;
+}
+
+.btnBack {
+  padding: 8px 16px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #475569;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btnBack:hover {
+  background: #f1f5f9;
+  transform: translateX(-3px);
+}
+
+.card {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #0f172a;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px 20px;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.infoLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.infoValue {
+  font-size: 14px;
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.statusActive { 
+  color: #166534; 
+  background: #dcfce7; 
+  padding: 2px 8px; 
+  border-radius: 12px; 
+  font-size: 12px; 
+  font-weight: 600; 
+}
+
+.statusDisabled { 
+  color: #991b1b; 
+  background: #fee2e2; 
+  padding: 2px 8px; 
+  border-radius: 12px; 
+  font-size: 12px; 
+  font-weight: 600; 
+}
+
+.verify { 
+  padding: 2px 8px; 
+  border-radius: 4px; 
+  font-size: 11px; 
+  font-weight: 700; 
+  text-transform: uppercase; 
+}
+
+.approved { background: #dcfce7; color: #166534; }
+.pending { background: #fef3c7; color: #92400e; }
+.updating { background: #e0f2fe; color: #0369a1; }
+.rejected { background: #fee2e2; color: #991b1b; }
+
+.bioBox {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 6px;
+  border-left: 3px solid #cbd5e1;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.verificationListContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.verificationGroup {
+  margin-bottom: 20px;
+  border-bottom: 1px dashed #e2e8f0;
+  padding-bottom: 15px;
+}
+
+.groupTitle {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+.fileGridAdmin {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.fileItemAdmin {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px;
+  background: #f8fafc;
+  text-align: center;
+}
+
+.filePreviewBox {
+  width: 100%;
+  height: 120px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.filePreviewBox img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+}
+
+.pdfIcon {
+  font-size: 24px;
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+.btnView { 
+  color: #1C357E; 
+  font-size: 12px; 
+  font-weight: 600; 
+  text-decoration: none; 
+}
+
+.btnView:hover {
+  text-decoration: underline;
+}
+
+.twoColumn {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.detailList { 
+  padding-left: 18px; 
+  margin: 0; 
+  font-size: 14px; 
+  color: #334155; 
+}
+
+.detailList li {
+  margin-bottom: 8px;
+}
+
+.mutedText {
+  color: #94a3b8;
+  font-size: 0.9em;
+}
+
+.mutedItalic {
+  color: #94a3b8;
+  font-style: italic;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .infoGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .infoGrid, 
+  .twoColumn {
+    grid-template-columns: 1fr;
+  }
+
+  .userdetailHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .userdetail {
+    padding: 15px;
+  }
+}

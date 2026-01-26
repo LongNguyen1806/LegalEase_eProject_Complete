@@ -1,0 +1,103 @@
+.detailWrapper {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: #ffffff;
+}
+
+.backBtn {
+  color: #64748b;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 30px;
+}
+
+.articleHeader {
+  margin-bottom: 35px;
+}
+
+.metaInfo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.News {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.Guide {
+  background: #dcfce7;
+  color: #15803d;
+}
+.FAQ {
+  background: #f1f5f9;
+  color: #475569;
+}
+.Policy {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.publishDate {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.mainTitle {
+  font-size: 36px;
+  font-weight: 800;
+  color: #1e293b;
+  line-height: 1.2;
+}
+
+.heroImage {
+  margin: 30px 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.heroImage img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.articleBody {
+  line-height: 1.8;
+  color: #334155;
+  font-size: 17px;
+}
+
+.articleBody img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.articleFooter {
+  margin-top: 50px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 30px;
+}
+
+.exploreLink {
+  color: #1c357e;
+  font-weight: 700;
+  text-decoration: none;
+}
+.statusBox {
+  padding: 100px;
+  text-align: center;
+  color: #64748b;
+}

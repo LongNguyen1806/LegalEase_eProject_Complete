@@ -1,0 +1,274 @@
+.apptListPage {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 40px 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.pageHeader h1 {
+  font-size: 28px;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.pageHeader p {
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.emptyState {
+  background: white;
+  border-radius: 16px;
+  padding: 60px 20px;
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.btnBookNow {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 24px;
+  background-color: #1a2f6d;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btnBookNow:hover {
+  background-color: #2a4388;
+}
+
+.apptGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.apptCard {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.apptCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.cardTop {
+  padding: 15px;
+  background-color: rgb(226, 232, 240);
+  border-bottom: 1px dashed #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timeBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.time {
+  font-weight: 800;
+  font-size: 16px;
+  color: #1e293b;
+}
+
+.date {
+  font-size: 13px;
+  color: #000000;
+}
+
+.statusBox {
+  display: flex;
+  align-items: center;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badgePending {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #ffedd5;
+}
+.badgeConfirmed {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #dcfce7;
+}
+.badgeCompleted {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #dbeafe;
+}
+.badgeCancelled {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fee2e2;
+}
+.badgeRefund {
+  background: #fdf4ff;
+  color: #a21caf;
+  border: 1px solid #fae8ff;
+}
+.badgeDefault {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.cardBody {
+  padding: 20px 15px;
+  flex: 1;
+}
+
+.lawyerInfo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.lawyerAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f1f5f9;
+}
+
+.lawyerName {
+  font-size: 16px;
+  margin: 0 0 4px 0;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.serviceName {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.cardFooter {
+  padding: 15px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.priceInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.priceInfo .label {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.priceInfo .price {
+  font-weight: 800;
+  color: #1a2f6d;
+  font-size: 16px;
+}
+
+.btnDetail {
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #1a2f6d;
+  color: #1a2f6d;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnDetail:hover {
+  background: #1a2f6d;
+  color: white;
+}
+
+.loadingState {
+  text-align: center;
+  padding: 100px;
+  font-size: 18px;
+  color: #64748b;
+}
+
+@media screen and (max-width: 768px) {
+  .apptListPage {
+    padding: 20px 15px;
+  }
+
+  .pageHeader h1 {
+    font-size: 22px;
+  }
+
+  .apptGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .apptCard {
+    border-radius: 12px;
+  }
+
+  .cardTop {
+    padding: 12px;
+  }
+
+  .cardBody {
+    padding: 15px 12px;
+  }
+
+  .lawyerAvatar {
+    width: 45px;
+    height: 45px;
+  }
+
+  .btnDetail {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .apptGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
