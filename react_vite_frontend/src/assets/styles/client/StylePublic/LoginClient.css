@@ -78,3 +78,22 @@
 .login-register a:hover {
   text-decoration: underline;
 }
+
+/* Forgot Password Link Styling */
+.login-forgot-wrapper {
+  text-align: right;
+  margin-bottom: 15px;
+}
+
+.login-forgot-link {
+  font-size: 14px;
+  color: #1c357e;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.login-forgot-link:hover {
+  color: #2a4bbd;
+  text-decoration: underline;
+}

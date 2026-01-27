@@ -9,7 +9,7 @@ import "../../assets/styles/client/StylePublic/LoginClient.css";
 
 export default function LoginClient() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState(""); 
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
@@ -39,9 +39,7 @@ export default function LoginClient() {
       }
       finalName = finalName || userData.email || "User";
 
-      const finalAvatar = userData.lawyer_profile?.profileimage || 
-                          userData.customer_profile?.profileimage || 
-                          null;
+      const finalAvatar = userData.lawyer_profile?.profileimage || userData.customer_profile?.profileimage || null;
 
       if (roleid === 2 || roleid === 3) {
         const userDataToSave = {
@@ -49,11 +47,11 @@ export default function LoginClient() {
           roleid: roleid,
           email: userData.email,
           fullname: finalName,
-          avatar: finalAvatar, 
+          avatar: finalAvatar,
         };
 
         login(userDataToSave, access_token);
-        
+
         toast.success("Login successful!");
         navigate("/");
       } else {
@@ -81,13 +79,7 @@ export default function LoginClient() {
       <form onSubmit={handleLogin} className='login-form'>
         <div className='form-group'>
           <label>Email</label>
-          <input 
-            type='email' 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            placeholder='example@email.com' 
-            required 
-          />
+          <input type='email' value={email} onChange={(e) => setEmail(e.target.value)} placeholder='example@email.com' required />
         </div>
 
         <div className='form-group'>
@@ -117,6 +109,12 @@ export default function LoginClient() {
               {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
             </span>
           </div>
+        </div>
+
+        <div className='login-forgot-wrapper'>
+          <Link to='/forgot-password' size={18} className='login-forgot-link'>
+            Forgot password?
+          </Link>
         </div>
 
         <button type='submit' className='login-button'>

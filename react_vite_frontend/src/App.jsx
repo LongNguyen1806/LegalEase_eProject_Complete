@@ -24,6 +24,8 @@ const WriteReview = lazy(() => import("./pages/public/WriteReview"));
 const LawyerList = lazy(() => import("./pages/public/LawyerList")); 
 const LoginClient = lazy(() => import("./pages/public/LoginClient")); 
 const Register = lazy(() => import("./pages/public/Register")); 
+const ForgotPassword = lazy(() => import("./components/Mail/ForgotPassword"));
+
 const SupportCenter = lazy(() => import("./pages/public/SupportCenter")); 
 const LawyerRegister = lazy(() => import("./pages/public/LawyerRegister")); 
 const NewsDetail = lazy(() => import("./pages/public/NewsDetail")); 
@@ -80,6 +82,7 @@ function App() {
             <Route path='/' element={<MainLayout />}>
               <Route index element={<HomePage />} />
               <Route path='login' element={<LoginClient />} />
+              <Route path='forgot-password' element={<ForgotPassword />} />
               <Route path='register' element={<Register />} />
               <Route path='register-lawyer' element={<LawyerRegister />} />
               <Route path='lawyers' element={<LawyerList />} />

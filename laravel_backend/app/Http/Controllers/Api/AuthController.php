@@ -9,10 +9,14 @@ use App\Models\CustomerProfile;
 use Illuminate\Support\Facades\Storage;
 use App\Models\LawyerVerification;
 use App\Models\LawyerOffice;
-use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AutomatedNotificationMail;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Authentication Controller
@@ -123,7 +127,7 @@ class AuthController extends Controller
                         $path = $file->storeAs('verifications', $filename, 'public');
 
                         $uploadedFiles[] = 'verifications/' . $filename;
-                        $docPaths[] = $path; 
+                        $docPaths[] = $path;
                     }
 
                     LawyerVerification::create([
@@ -155,7 +159,7 @@ class AuthController extends Controller
                 if ($request->has('achievements')) {
                     $achData = [];
                     foreach ($request->achievements as $title) {
-                        if (!empty($title)) { 
+                        if (!empty($title)) {
                             $achData[] = [
                                 'lawyerid' => $user->userid,
                                 'title'    => $title,
@@ -167,7 +171,7 @@ class AuthController extends Controller
                     }
                 }
             } else {
-               
+
                 CustomerProfile::create([
                     'customerid'  => $user->userid,
                     'fullname'    => $request->fullname,
@@ -286,5 +290,93 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logout successful']);
+    }
+
+    /**
+     * Initiate password recovery process.
+     * * Generates a 6-digit verification code (OTP) and sends it to the user's email.
+     * The OTP is stored in the password_reset_tokens table for later verification.
+     * * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        try {
+            $otp = rand(100000, 999999);
+
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $request->email],
+                [
+                    'token' => $otp,
+                    'created_at' => Carbon::now()
+                ]
+            );
+
+            $mailData = [
+                'subject' => 'Password Reset Verification Code',
+                'title'   => 'Password Recovery Request',
+                'content' => 'We received a request to reset your LegalEase account password. Please use the verification code provided below to proceed.',
+                'otp'     => $otp
+            ];
+
+            Mail::to($request->email)->send(new AutomatedNotificationMail($mailData));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'A verification code has been sent to your email address.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Service error: Unable to send email.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Reset user password using valid OTP.
+     * * Validates the provided OTP against the stored record. If valid and not expired 
+     * (within 60 minutes), updates the user's password and clears the reset token.
+     * * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email'    => 'required|email|exists:users,email',
+            'otp'      => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $resetRecord = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->where('token', $request->otp)
+            ->first();
+
+        if (!$resetRecord || Carbon::parse($resetRecord->created_at)->addMinutes(60)->isPast()) {
+            return response()->json(['success' => false, 'message' => 'Invalid or expired verification code.'], 400);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $user = User::where('email', $request->email)->first();
+            $user->password = $request->password;
+            $user->save();
+
+            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+            DB::commit();
+
+            return response()->json(['success' => true, 'message' => 'Password reset successfully. You can now log in.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'Failed to reset password.'], 500);
+        }
     }
 }

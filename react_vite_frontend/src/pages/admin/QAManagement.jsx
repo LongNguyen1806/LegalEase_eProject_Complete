@@ -5,7 +5,7 @@ import styles from "../../assets/styles/admin/QAManagement.module.css";
 
 import { toast } from "sonner";
 import Swal from "sweetalert2";
-import { FaTrash, FaCheck, FaEye, FaFileImport, FaHistory, FaBook, FaPlus, FaUsers, FaTimes, FaUserAlt, FaCalendarAlt } from "react-icons/fa";
+import { FaTrash, FaCheck, FaEye, FaPlus, FaTimes, FaUserAlt, FaCalendarAlt } from "react-icons/fa";
 
 export default function QAManagement() {
   const queryClient = useQueryClient();
