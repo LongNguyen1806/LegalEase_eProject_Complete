@@ -85,7 +85,7 @@ class AdminAppointmentController extends Controller
             $oldStatus = $appointment->status;
 
             $invoice = PaymentInvoice::where('appointid', $appointment->appointid)->first();
-            $msg = 'Đã hủy lịch hẹn.';
+            $msg = 'The appointment has been canceled.';
 
             if ($invoice && $invoice->status === 'Success') {
                 $invoice->status = 'Refund_Pending';

@@ -66,13 +66,13 @@ export default function LawyerProfile() {
     return (
       <div className={styles.loadingContainer}>
         <div className={styles.spinner}></div>
-        <p>Đang tải hồ sơ luật sư...</p>
+        <p>Loading lawyer profile…</p>
       </div>
     );
   }
 
   if (isProfileError || !profileData) {
-    return <div className={styles.error}>Không thể tải dữ liệu hồ sơ. Vui lòng thử lại sau.</div>;
+    return <div className={styles.error}>Something went wrong while loading the profile. Please try again later.</div>;
   }
 
   return (

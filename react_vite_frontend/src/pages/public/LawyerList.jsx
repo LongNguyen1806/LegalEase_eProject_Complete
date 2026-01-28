@@ -63,7 +63,7 @@ export default function LawyerList() {
 
     if (user.roleid === 2) {
       Swal.fire({
-        title: "Thông báo",
+        title: "Notification",
         text: "The appointment booking feature is available to customers only. Lawyers cannot perform this action.",
         icon: "warning",
         confirmButtonColor: "#1c357e",

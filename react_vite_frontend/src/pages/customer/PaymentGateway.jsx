@@ -108,7 +108,7 @@ export default function PaymentGateway() {
         });
 
         const lawyerId = bookingData.lawyer?.userid;
-        console.log("Điều hướng về ID:", lawyerId);
+        console.log("Navigate to ID:", lawyerId);
         navigate(`/booking/${lawyerId}`);
       } else {
         toast.error(`Error: ${serverMsg}`, { id: loadingToast });

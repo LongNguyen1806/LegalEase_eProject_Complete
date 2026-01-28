@@ -12,7 +12,6 @@ class LawyerProfile extends Model
     protected $table = 'lawyer_profiles';
     protected $primaryKey = 'lawyerid';
 
-    // Vì LawyerID là FK từ UserID, không phải số tự tăng
     public $incrementing = false;
 
     protected $fillable = [

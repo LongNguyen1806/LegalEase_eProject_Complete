@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
           axiosClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         } catch (error) {
-          console.error("Lỗi dữ liệu Auth:", error);
+          console.error("Authentication data error:", error);
           localStorage.clear();
         }
       }
