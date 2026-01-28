@@ -1,6 +1,6 @@
 #### **⚖️ LegalEase – Online Legal Services Platform**
 
-
+---
 
 ###### Class: T3.2508.E1 | Group: 3 | Institution: FPT APTECH
 
