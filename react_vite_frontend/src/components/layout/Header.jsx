@@ -174,7 +174,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* --- MENU MOBILE --- */}
       {isMobileMenuOpen && (
         <nav className='mobile-nav'>
           <Link to='/' onClick={() => setIsMobileMenuOpen(false)}>

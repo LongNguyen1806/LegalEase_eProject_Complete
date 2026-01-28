@@ -181,7 +181,6 @@ export default function ProfessionalTab({ data, specsMaster, reload }) {
 
   return (
     <div className={styles.grid}>
-      {/* LEFT COLUMN */}
       <div className={styles.leftCol}>
         <h3 className={styles.sectionTitle}>
           <FaGavel /> Professional Expertise

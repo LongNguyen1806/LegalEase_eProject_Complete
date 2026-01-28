@@ -14,6 +14,8 @@ use App\Models\Appointment;
 use App\Models\PaymentInvoice;
 use App\Traits\HasAuditLog;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AutomatedNotificationMail;
 
 /**
  * Handles administrative management of user accounts and lawyer verifications.
@@ -132,8 +134,8 @@ class AdminUserController extends Controller
             return asset('storage/' . $cleanPath);
         };
 
-        if ($user->roleid == 2) { 
-            $user->load(['lawyerProfile']); 
+        if ($user->roleid == 2) {
+            $user->load(['lawyerProfile']);
 
             if ($user->lawyerProfile && $user->lawyerProfile->profileimage) {
                 $user->lawyerProfile->profileimage = $formatImageUrl($user->lawyerProfile->profileimage, 'lawyer_avatars');
@@ -191,8 +193,8 @@ class AdminUserController extends Controller
                     'verifications' => $verifications
                 ]
             ]);
-        } elseif ($user->roleid == 3) { 
-            $user->load('customerProfile'); 
+        } elseif ($user->roleid == 3) {
+            $user->load('customerProfile');
 
             if ($user->customerProfile && $user->customerProfile->profileimage) {
                 $user->customerProfile->profileimage = $formatImageUrl($user->customerProfile->profileimage, 'customer_avatars');
@@ -453,6 +455,7 @@ class AdminUserController extends Controller
 
             if ($verification->lawyer->user) {
                 $verification->lawyer->user->update(['isactive' => true]);
+                $this->sendVerificationEmail($verification->lawyer->user, 'approved');
             }
         }
 
@@ -476,6 +479,43 @@ class AdminUserController extends Controller
 
         LawyerProfile::where('lawyerid', $verification->lawyerid)->update(['isverified' => false]);
 
+        if ($verification->lawyer && $verification->lawyer->user) {
+            $this->sendVerificationEmail($verification->lawyer->user, 'rejected');
+        }
         return response()->json(['success' => true, 'message' => 'Verification rejected.']);
+    }
+
+    /**
+     * Sends automated notification emails based on admin account actions.
+     *
+     * @param \App\Models\User $user
+     * @param string $actionType
+     */
+    private function sendVerificationEmail($user, $status)
+    {
+        $fullname = $user->lawyerProfile->fullname ?? 'Lawyer';
+        $mailData = [];
+
+        if ($status === 'approved') {
+            $mailData = [
+                'subject' => 'LegalEase - Your Professional Profile is Approved!',
+                'title'   => 'Verification Approved',
+                'content' => "Dear Lawyer $fullname, congratulations! Your professional documents have been successfully verified. Your account is now active, and you can start accepting consultations on the LegalEase platform."
+            ];
+        } elseif ($status === 'rejected') {
+            $mailData = [
+                'subject' => 'LegalEase - Update on Your Verification Request',
+                'title'   => 'Verification Rejected',
+                'content' => "Hello $fullname, we regret to inform you that your verification request has been rejected due to invalid or insufficient documentation. Please review your profile and re-upload the required documents for another review."
+            ];
+        }
+
+        if (!empty($mailData)) {
+            try {
+                Mail::to($user->email)->queue(new AutomatedNotificationMail($mailData));
+            } catch (\Exception $e) {
+                Log::error("Failed to send verification email to {$user->email}: " . $e->getMessage());
+            }
+        }
     }
 }

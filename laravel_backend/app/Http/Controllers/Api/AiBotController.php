@@ -202,7 +202,7 @@ class AiBotController extends Controller
         foreach ($rows as $r) {
             $min = (float) $r->min_price;
             $max = (float) $r->max_price;
-            $lines[] = sprintf('%s: from %s to %s VND', $r->specname, number_format($min), number_format($max));
+            $lines[] = sprintf('%s: from %s to %s $', $r->specname, number_format($min), number_format($max));
         }
         return "Consultation price ranges by specialty (from lawyer_specialties):\n" . implode("\n", $lines);
     }

@@ -10,6 +10,9 @@ use App\Models\Appointment;
 use App\Models\LawyerVerification;
 use App\Models\PaymentInvoice;
 use App\Traits\HasAuditLog;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AutomatedNotificationMail;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Admin Finance Controller
@@ -142,8 +145,8 @@ class AdminFinanceController extends Controller
                 ->select('payments_invoices.*', 'users.email', 'users.roleid')
                 ->orderBy('payments_invoices.createdat', 'desc')
                 ->paginate(5)
-                
-               ->through(function ($item) {
+
+                ->through(function ($item) {
 
                     $item->payment_type = ($item->roleid == 2) ? 'Subscription' : 'Booking';
 
@@ -226,7 +229,7 @@ class AdminFinanceController extends Controller
     {
         DB::beginTransaction();
         try {
-            $invoice = PaymentInvoice::findOrFail($invoiceId);
+            $invoice = PaymentInvoice::with('user')->findOrFail($invoiceId);
 
             if (!in_array($invoice->status, ['Refund_Pending', 'Success'])) {
                 return response()->json(['message' => 'Invoice status invalid for refund.'], 400);
@@ -248,10 +251,51 @@ class AdminFinanceController extends Controller
             $this->logAction("Processed refund for Invoice ID: {$invoiceId}, Actual Refund Paid: {$actualRefund}");
 
             DB::commit();
+
+            $this->sendRefundEmail($invoice->user, $invoice);
+
             return response()->json(['success' => true, 'message' => 'Refund completed successfully.']);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Send an automated refund confirmation email to the customer.
+     *
+     * This method is triggered after a refund transaction is successfully processed.
+     * It notifies the customer with refund details including the refunded amount,
+     * invoice reference, and expected processing time based on the original payment method.
+     *
+     * @param \App\Models\User    $user     The customer receiving the refund notification
+     * @param \App\Models\Invoice $invoice  The invoice associated with the refund transaction
+     *
+     * @return void
+     */
+    private function sendRefundEmail($user, $invoice)
+    {
+        if (!$user || !$user->email) return;
+
+        $refundAmount = $invoice->refundamount > 0 ? $invoice->refundamount : $invoice->amount;
+        $formattedAmount = number_format($refundAmount) . ' $';
+        $invoiceId = $invoice->invoiceid;
+
+        $mailData = [
+            'subject' => "LegalEase - Refund Processed Successfully (#INV-$invoiceId)",
+            'title'   => 'Refund Confirmation',
+            'content' => "Hello,\n\nThis is to confirm that your refund for Invoice #$invoiceId has been successfully processed.\n\n" .
+                "**Refund Details:**\n" .
+                "- Amount Refunded: $formattedAmount\n" .
+                "- Status: Completed\n" .
+                "- Payment Method: Original Payment Method\n\n" .
+                "The funds should appear in your account within 2-5 business days depending on your bank. Thank you for using LegalEase."
+        ];
+
+        try {
+            Mail::to($user->email)->queue(new AutomatedNotificationMail($mailData));
+        } catch (\Exception $e) {
+            Log::error("Failed to send refund email for Invoice #$invoiceId: " . $e->getMessage());
         }
     }
 }

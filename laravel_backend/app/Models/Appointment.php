@@ -33,7 +33,7 @@ class Appointment extends Model
     protected $casts = [
         'commissionfee' => 'decimal:2',
     ];
-    
+
     public function slot()
     {
         return $this->belongsTo(AvailabilitySlot::class, 'slotid', 'slotid');
@@ -43,10 +43,10 @@ class Appointment extends Model
     {
         return $this->belongsTo(CustomerProfile::class, 'customerid', 'customerid');
     }
-    
+
     public function lawyer()
     {
-       return $this->belongsTo(LawyerProfile::class, 'lawyerid', 'lawyerid');
+        return $this->belongsTo(LawyerProfile::class, 'lawyerid', 'lawyerid');
     }
 
     public function invoice()
@@ -58,7 +58,7 @@ class Appointment extends Model
     {
         return $this->hasOne(Review::class, 'appointid', 'appointid');
     }
-   
+
     public function getEndTimeAttribute()
     {
         if (!$this->starttime || !$this->duration) return null;
@@ -69,5 +69,16 @@ class Appointment extends Model
     {
         if (!$this->slot || !$this->starttime) return null;
         return Carbon::parse($this->slot->availabledate . ' ' . $this->starttime);
+    }
+
+    //For sending emails
+    public function userCustomer()
+    {
+        return $this->belongsTo(User::class, 'customerid', 'userid');
+    }
+
+    public function userLawyer()
+    {
+        return $this->belongsTo(User::class, 'lawyerid', 'userid');
     }
 }

@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AutomatedNotificationMail;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Authentication Controller
@@ -180,6 +180,8 @@ class AuthController extends Controller
             }
 
             DB::commit();
+            
+            $this->sendRegistrationEmail($user, $request->fullname);
 
             return response()->json([
                 'message' => (int)$user->roleid === 2
@@ -377,6 +379,35 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['success' => false, 'message' => 'Failed to reset password.'], 500);
+        }
+    }
+
+    /**
+     * Sends a welcome email after a successful registration.
+     *
+     * @param \App\Models\User $user
+     * @param string $fullname
+     */
+    private function sendRegistrationEmail($user, $fullname)
+    {
+        if ((int)$user->roleid === 2) {
+            $mailData = [
+                'subject' => 'Welcome to LegalEase - Lawyer Partnership',
+                'title'   => 'Lawyer Registration Successful',
+                'content' => "Dear Lawyer $fullname, thank you for joining LegalEase. Your application has been received and is currently pending administrative review. We will notify you via email as soon as your profile is approved and activated."
+            ];
+        } else {
+            $mailData = [
+                'subject' => 'Welcome to LegalEase',
+                'title'   => 'Account Created Successfully',
+                'content' => "Hello $fullname, your account has been created successfully. You can now explore our platform, search for professional lawyers, and book your first legal consultation."
+            ];
+        }
+
+        try {
+            Mail::to($user->email)->queue(new AutomatedNotificationMail($mailData));
+        } catch (\Exception $e) {
+            Log::error("Failed to send registration email to {$user->email}: " . $e->getMessage());
         }
     }
 }

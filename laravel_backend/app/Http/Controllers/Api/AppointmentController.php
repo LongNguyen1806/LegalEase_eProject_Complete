@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Traits\HasNotifications;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AutomatedNotificationMail;
+use Illuminate\Support\Facades\Log;
 
 /**
  * AppointmentController
@@ -42,7 +45,8 @@ class AppointmentController extends Controller
     {
         $now = now();
 
-        $expiredPending = Appointment::join('availability_slots', 'appointments.slotid', '=', 'availability_slots.slotid')
+        $expiredPending = Appointment::with(['userCustomer', 'slot'])
+            ->join('availability_slots', 'appointments.slotid', '=', 'availability_slots.slotid')
             ->where('appointments.status', 'Pending')
             ->whereRaw("CONCAT(availability_slots.availabledate, ' ', appointments.starttime) < ?", [$now])
             ->select('appointments.*')
@@ -60,6 +64,9 @@ class AppointmentController extends Controller
                     'refundamount' => $invoice->amount
                 ]);
 
+                if ($app->userCustomer) {
+                    $this->sendAppointmentEmail($app->userCustomer, 'declined_expired', $app);
+                }
                 $this->sendNotification(
                     $app->customerid,
                     "Appointment #{$app->appointid} has expired (Not confirmed). Refund pending.",
@@ -201,7 +208,15 @@ class AppointmentController extends Controller
 
             DB::commit();
 
+            $appointment->load(['slot', 'userLawyer', 'userCustomer', 'invoice']);
 
+            if ($appointment->userCustomer) {
+                $this->sendAppointmentEmail($appointment->userCustomer, 'new_request_customer', $appointment);
+            }
+
+            if ($appointment->userLawyer) {
+                $this->sendAppointmentEmail($appointment->userLawyer, 'new_request_lawyer', $appointment);
+            }
             $this->sendNotification(
                 $shift->lawyerid,
                 "You have a new appointment request #{$appointment->appointid}.",
@@ -236,7 +251,8 @@ class AppointmentController extends Controller
         $this->autoCancelExpired($user->userid, $user->roleid);
         DB::beginTransaction();
         try {
-            $appointment = Appointment::where('appointid', $id)
+            $appointment = Appointment::with(['userCustomer', 'slot'])
+                ->where('appointid', $id)
                 ->lockForUpdate()
                 ->first();
 
@@ -265,6 +281,10 @@ class AppointmentController extends Controller
                 );
 
                 DB::commit();
+
+                if ($appointment->userCustomer) {
+                    $this->sendAppointmentEmail($appointment->userCustomer, 'confirmed', $appointment);
+                }
                 return response()->json(['success' => true, 'message' => 'Appointment confirmed successfully.']);
             } else {
                 $rejectMessage = " | [Lawyer]: Sorry, I cannot accept this appointment at the moment.";
@@ -300,6 +320,10 @@ class AppointmentController extends Controller
 
                 $appointment->save();
                 DB::commit();
+
+                if ($appointment->userCustomer) {
+                    $this->sendAppointmentEmail($appointment->userCustomer, 'declined_expired', $appointment);
+                }
                 return response()->json(['success' => true, 'message' => $msg]);
             }
         } catch (\Exception $e) {
@@ -326,7 +350,11 @@ class AppointmentController extends Controller
 
         $request->validate(['reason' => 'required|string|min:10|max:500']);
 
-        $appointment = Appointment::with('slot')->where('appointid', $id)->where('customerid', $user->userid)->first();
+        $appointment = Appointment::with(['slot', 'userCustomer', 'userLawyer', 'invoice'])
+            ->where('appointid', $id)
+            ->where('customerid', $user->userid)
+            ->first();
+
         if (!$appointment) return response()->json(['success' => false, 'message' => 'No appointment found.'], 404);
 
         if (!in_array($appointment->status, ['Pending', 'Confirmed'])) {
@@ -358,7 +386,7 @@ class AppointmentController extends Controller
 
                 $invoice->update([
                     'status' => 'Refund_Pending',
-                    'refundamount' => round($refundAmount, 2) 
+                    'refundamount' => round($refundAmount, 2)
                 ]);
 
                 $resMessage = 'The cancellation request has been processed successfully. The 10% service fee was applied. Refund is pending.';
@@ -370,6 +398,14 @@ class AppointmentController extends Controller
 
             $appointment->save();
             DB::commit();
+
+            if ($appointment->userLawyer) {
+                $this->sendAppointmentEmail($appointment->userLawyer, 'cancelled_by_customer', $appointment);
+            }
+
+            if ($appointment->userCustomer) {
+                $this->sendAppointmentEmail($appointment->userCustomer, 'customer_cancelled_confirm', $appointment);
+            }
 
             $this->sendNotification($appointment->lawyerid, "Appointment #{$id} was canceled by the client.", "/lawyer/appointments");
 
@@ -396,7 +432,9 @@ class AppointmentController extends Controller
 
         $this->autoCancelExpired($user->userid, $user->roleid);
 
-        $appointment = Appointment::with(['slot', 'invoice', 'lawyer'])->where('appointid', $id)->first();
+        $appointment = Appointment::with(['slot', 'invoice', 'lawyer', 'userCustomer'])
+            ->where('appointid', $id)
+            ->first();
 
         if (!$appointment || $appointment->lawyerid != $user->userid) {
             return response()->json(['message' => 'Unauthorized access.'], 403);
@@ -426,7 +464,7 @@ class AppointmentController extends Controller
 
             $appointment->update([
                 'status' => 'Completed',
-                'commissionfee' => $platformCommission 
+                'commissionfee' => $platformCommission
             ]);
 
             $earning = LawyerEarning::firstOrCreate(['lawyerid' => $appointment->lawyerid]);
@@ -437,6 +475,10 @@ class AppointmentController extends Controller
 
             DB::commit();
 
+            if ($appointment->userCustomer) {
+                $this->sendAppointmentEmail($appointment->userCustomer, 'completed', $appointment);
+            }
+            
             $this->sendNotification(
                 $appointment->customerid,
                 "Appointment #{$appointment->appointid} completed. Please leave a review for Lawyer {$appointment->lawyer->fullname}.",
@@ -641,5 +683,126 @@ class AppointmentController extends Controller
         $appointment->is_refund_case = ($appointment->status === 'Refund_Pending');
 
         return response()->json(['success' => true, 'data' => $appointment]);
+    }
+
+    /**
+     * Send automated appointment-related notification emails to customers or lawyers.
+     *
+     * This method handles all email notifications triggered by appointment lifecycle
+     * events such as new booking requests, confirmations, cancellations, expirations,
+     * and completed sessions. Email content is dynamically generated based on the
+     * notification type and appointment details.
+     *
+     * @param \App\Models\User        $recipientUser  The user who will receive the email (customer or lawyer)
+     * @param string                 $type           The appointment notification type
+     *                                               (new_request_customer, new_request_lawyer,
+     *                                                confirmed, declined_expired,
+     *                                                cancelled_by_customer, completed)
+     * @param \App\Models\Appointment $appointment   The appointment entity containing booking details
+     *
+     * @return void
+     */
+    private function sendAppointmentEmail($recipientUser, $type, $appointment)
+    {
+        $mailData = [];
+        $appId = $appointment->appointid;
+        $time = $appointment->starttime;
+        $date = $appointment->slot && $appointment->slot->availabledate
+            ? Carbon::parse($appointment->slot->availabledate)->format('d/m/Y')
+            : 'N/A';
+
+        switch ($type) {
+            case 'new_request_customer':
+                $amount = $appointment->invoice ? number_format($appointment->invoice->amount) . '$' : 'N/A';
+                $paymentMethod = $appointment->invoice->paymentmethod ?? 'N/A';
+                $transactionId = $appointment->invoice->transactionno ?? 'N/A';
+
+                $mailData = [
+                    'subject' => "Booking Confirmation - Appointment #$appId",
+                    'title'   => 'Appointment Request Received',
+                    'content' => "Hello, your booking request for '$appointment->packagename' has been sent successfully.\n\n" .
+                        "**Payment Information:**\n" .
+                        "- Total Paid: $amount\n" .
+                        "- Payment Method: $paymentMethod\n" .
+                        "- Transaction ID: $transactionId\n\n" .
+                        "**Appointment Details:**\n" .
+                        "- Date: $date\n" .
+                        "- Time: $time\n" .
+                        "- ID: #$appId\n\n" .
+                        "Please wait while the lawyer reviews and confirms your request."
+                ];
+                break;
+
+            case 'new_request_lawyer':
+                $amount = $appointment->invoice ? number_format($appointment->invoice->amount) . ' $' : 'N/A';
+                $mailData = [
+                    'subject' => "New Appointment Request #$appId",
+                    'title'   => 'New Booking Alert',
+                    'content' => "Dear Lawyer, you have received a new appointment request from a client.\n\n" .
+                        "**Status: PAYMENT CONFIRMED**\n" .
+                        "- Service: $appointment->packagename\n" .
+                        "- Date: $date\n" .
+                        "- Time: $time\n" .
+                        "- Total Fee: $amount\n\n" .
+                        "Please log in to your dashboard to approve or decline the request as soon as possible."
+                ];
+                break;
+
+            case 'confirmed':
+                $mailData = [
+                    'subject' => "Appointment Confirmed - #$appId",
+                    'title'   => 'Your Appointment is Ready!',
+                    'content' => "Great news! Your appointment on $date at $time has been confirmed by the lawyer. Please be ready at the scheduled time."
+                ];
+                break;
+            case 'declined_expired':
+                $amount = $appointment->invoice ? number_format($appointment->invoice->amount) . ' $' : 'N/A';
+                $mailData = [
+                    'subject' => "Update on Appointment #$appId",
+                    'title'   => 'Appointment Cancelled',
+                    'content' => "Hello, we regret to inform you that your appointment #$appId could not be completed because it was declined by the lawyer or has expired.\n\n" .
+                        "**Refund Information:**\n" .
+                        "- Status: Refund Initiated\n" .
+                        "- Amount: $amount (100% Refunded)"
+                ];
+                break;
+
+            case 'customer_cancelled_confirm':
+                $totalAmount = $appointment->invoice ? $appointment->invoice->amount : 0;
+                $refundAmount = number_format($totalAmount / 1.1) . ' $';
+
+                $mailData = [
+                    'subject' => "Cancellation Confirmed - Appointment #$appId",
+                    'title'   => 'Appointment Cancelled by You',
+                    'content' => "Hello, this email confirms that you have cancelled your appointment #$appId.\n\n" .
+                        "As per our policy, a 10% service fee has been applied.\n\n" .
+                        "**Refund Information:**\n" .
+                        "- Refund Amount: $refundAmount (90% of total paid)\n" .
+                        "- Status: Processing"
+                ];
+                break;
+            case 'cancelled_by_customer':
+                $mailData = [
+                    'subject' => "Appointment #$appId Cancelled by Client",
+                    'title'   => 'Client Cancellation',
+                    'content' => "Dear Lawyer, the appointment #$appId scheduled for $date has been cancelled by the client. The slot is now available again."
+                ];
+                break;
+            case 'completed':
+                $mailData = [
+                    'subject' => "Session Completed - #$appId",
+                    'title'   => 'Thank You for Using LegalEase',
+                    'content' => "Your consultation session #$appId is officially complete. We hope you received valuable legal advice. Please take a moment to rate and review your lawyer's service."
+                ];
+                break;
+        }
+
+        if (!empty($mailData)) {
+            try {
+                Mail::to($recipientUser->email)->queue(new AutomatedNotificationMail($mailData));
+            } catch (\Exception $e) {
+                Log::error("Failed to send appointment email ($type) to {$recipientUser->email}: " . $e->getMessage());
+            }
+        }
     }
 }

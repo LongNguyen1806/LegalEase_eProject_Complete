@@ -85,7 +85,6 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* CORE VALUES - Ensuring Trust and Security */}
       <section className={styles.sectionPadding}>
         <h2 className={styles.sectionTitle}>Core Values</h2>
         <div className={styles.cardGrid}>

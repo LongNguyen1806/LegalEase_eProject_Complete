@@ -39,7 +39,6 @@ export default function Dashboard() {
         renderSkeleton()
       ) : (
         <div className={styles.dashboardGrid}>
-          {/* CỘT 1: NGƯỜI DÙNG */}
           <div className={styles.dashboardCard}>
             <h3 className={styles.cardTitle}>
               <FaUsers color='#1c357e' /> Users

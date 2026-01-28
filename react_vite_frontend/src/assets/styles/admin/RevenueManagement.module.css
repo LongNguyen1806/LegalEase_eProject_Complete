@@ -67,7 +67,6 @@
   background-color: white;
 }
 
-/* SUMMARY CARDS */
 .summaryGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
