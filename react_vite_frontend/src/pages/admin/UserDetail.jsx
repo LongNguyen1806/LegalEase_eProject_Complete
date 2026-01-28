@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axiosClient from "../../api/apiAxios";
 import styles from "../../assets/styles/admin/UserDetail.module.css";
 import { formatFullDate } from "../../utils/dateUtils";
+import SafeImage from "../../components/common/SafeImage";
 
 export default function UserDetail() {
   const { id } = useParams();
@@ -31,7 +32,7 @@ export default function UserDetail() {
   if (loading) return <div className={styles.userdetailLoading}>Loading...</div>;
   if (!data) return <div className={styles.userdetailLoading}>No data.</div>;
 
-  const { user, profile, offices, degrees, rolename, verification_status, verifications } = data;
+  const { user, profile, offices, degrees, rolename, verification_status, verifications, specialties } = data;
 
   return (
     <div className={styles.userdetail}>
@@ -42,38 +43,41 @@ export default function UserDetail() {
         <h1>User Details: #{user.userid}</h1>
       </div>
       <div className={styles.card}>
-        <h3>Account Information</h3>
-        <div className={styles.infoGrid}>
-          <div className={styles.infoItem}>
-            <span className={styles.infoLabel}>Full Name</span>
-            <span className={styles.infoValue}>{profile?.fullname || "N/A"}</span>
+        <div className={styles.accountHeaderFlex}>
+          <div className={styles.avatarSection}>
+            <SafeImage src={profile?.profileimage} type={user.roleid === 2 ? "lawyer" : "customer"} className={styles.detailAvatar} />
           </div>
-          <div className={styles.infoItem}>
-            <span className={styles.infoLabel}>Email</span>
-            <span className={styles.infoValue}>{user.email}</span>
-          </div>
-          <div className={styles.infoItem}>
-            <span className={styles.infoLabel}>Role</span>
-            <span className={styles.infoValue}>{rolename}</span>
-          </div>
-          <div className={styles.infoItem}>
-            <span className={styles.infoLabel}>Status</span>
-            <span className={styles.infoValue}>
-              {user.isactive ? (
-                <span className={styles.statusActive}>Active</span>
-              ) : (
-                <span className={styles.statusDisabled}>Disabled</span>
-              )}
-            </span>
-          </div>
-          <div className={styles.infoItem}>
-            <span className={styles.infoLabel}>Phone</span>
-            <span className={styles.infoValue}>{profile?.phonenumber || "Not updated"}</span>
-          </div>
-          <div className={styles.infoItem}>
-            <span className={styles.infoLabel}>Joined At</span>
-          
-            <span className={styles.infoValue}>{formatFullDate(user.created_at)}</span>
+
+          <div style={{ flex: 1 }}>
+            <h3>Account Information</h3>
+            <div className={styles.infoGrid}>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Full Name</span>
+                <span className={styles.infoValue}>{profile?.fullname || "N/A"}</span>
+              </div>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Email</span>
+                <span className={styles.infoValue}>{user.email}</span>
+              </div>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Role</span>
+                <span className={styles.infoValue}>{rolename}</span>
+              </div>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Status</span>
+                <span className={styles.infoValue}>
+                  {user.isactive ? <span className={styles.statusActive}>Active</span> : <span className={styles.statusDisabled}>Disabled</span>}
+                </span>
+              </div>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Phone</span>
+                <span className={styles.infoValue}>{profile?.phonenumber || "Not updated"}</span>
+              </div>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Joined At</span>
+                <span className={styles.infoValue}>{formatFullDate(user.created_at)}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -86,9 +90,7 @@ export default function UserDetail() {
               <div className={styles.infoItem}>
                 <span className={styles.infoLabel}>Verification</span>
                 <span className={styles.infoValue}>
-                  <span className={`${styles.verify} ${styles[verification_status?.toLowerCase() || "rejected"]}`}>
-                    {verification_status}
-                  </span>
+                  <span className={`${styles.verify} ${styles[verification_status?.toLowerCase() || "rejected"]}`}>{verification_status}</span>
                 </span>
               </div>
               <div className={styles.infoItem}>
@@ -113,8 +115,7 @@ export default function UserDetail() {
                     <div key={v.verifyid || vIdx} className={styles.verificationGroup}>
                       {verifications.length > 1 && (
                         <h4 className={styles.groupTitle}>
-                          Request #{v.verifyid} - 
-                          <span className={styles[`status${v.status}`]}> {v.status}</span>
+                          Request #{v.verifyid} -<span className={styles[`status${v.status}`]}> {v.status}</span>
                           <small> ({formatFullDate(v.updated_at)})</small>
                         </h4>
                       )}
@@ -127,11 +128,7 @@ export default function UserDetail() {
                                 {fullUrl.toLowerCase().endsWith(".pdf") ? (
                                   <span className={styles.pdfIcon}>📕 PDF</span>
                                 ) : (
-                                  <img
-                                    src={fullUrl}
-                                    alt={`Doc ${imgIdx + 1}`}
-                                    onError={(e) => (e.target.src = "https://via.placeholder.com/100?text=Error")}
-                                  />
+                                  <img src={fullUrl} alt={`Doc ${imgIdx + 1}`} onError={(e) => (e.target.src = "https://via.placeholder.com/100?text=Error")} />
                                 )}
                               </div>
                               <span className={styles.infoLabel}>Doc #{imgIdx + 1}</span>

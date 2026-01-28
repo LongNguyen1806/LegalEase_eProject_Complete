@@ -129,4 +129,15 @@ class NotificationController extends Controller
             'success' => true
         ]);
     }
+
+    public function destroyAll()
+    {
+        $userId = Auth::user()->userid;
+        Notification::where('userid', $userId)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'All notifications deleted'
+        ]);
+    }
 }

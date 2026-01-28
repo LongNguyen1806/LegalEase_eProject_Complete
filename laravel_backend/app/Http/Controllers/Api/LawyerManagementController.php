@@ -238,8 +238,7 @@ class LawyerManagementController extends Controller
 
                 $this->sendNotification(
                     $user->userid,
-                    "Your verification documents have been submitted successfully. Status: {$newStatus}.",
-                    "/lawyer/dashboard"
+                    "Your verification documents have been submitted successfully. Status: {$newStatus}."
                 );
 
                 $admins = User::where('roleid', 1)->get();

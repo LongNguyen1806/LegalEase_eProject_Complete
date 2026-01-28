@@ -12,7 +12,7 @@ export const useNotificationStore = create((set, get) => ({
       const res = await axiosClient.get("/notifications");
       const data = (res.data.data || []).map((n) => ({
         ...n,
-        isread: Number(n.isread), 
+        isread: Number(n.isread),
       }));
       set({ notifications: data, isLoading: false });
     } catch (error) {
@@ -36,9 +36,7 @@ export const useNotificationStore = create((set, get) => ({
     const target = notifications.find((n) => n.notifid === notifId);
     const wasUnread = target && Number(target.isread) === 0;
 
-    const updatedNotifs = notifications.map((n) => 
-      n.notifid === notifId ? { ...n, isread: 1 } : n
-    );
+    const updatedNotifs = notifications.map((n) => (n.notifid === notifId ? { ...n, isread: 1 } : n));
 
     set({
       notifications: updatedNotifs,
@@ -66,6 +64,42 @@ export const useNotificationStore = create((set, get) => ({
       get().fetchNotifications();
       get().fetchUnreadCount();
       console.error("API Error markAllAsRead:", error);
+    }
+  },
+
+  deleteNotification: async (notifId) => {
+    const { notifications, unreadCount } = get();
+
+    const target = notifications.find((n) => n.notifid === notifId);
+    const wasUnread = target && Number(target.isread) === 0;
+
+    const filteredNotifs = notifications.filter((n) => n.notifid !== notifId);
+    set({
+      notifications: filteredNotifs,
+      unreadCount: wasUnread ? Math.max(0, unreadCount - 1) : unreadCount,
+    });
+
+    try {
+      await axiosClient.delete(`/notifications/${notifId}`);
+    } catch (error) {
+      console.error("API Error deleteNotification:", error);
+      get().fetchNotifications();
+      get().fetchUnreadCount();
+    }
+  },
+
+  clearAllNotifications: async () => {
+    set({
+      notifications: [],
+      unreadCount: 0,
+    });
+
+    try {
+      await axiosClient.delete("/notifications");
+    } catch (error) {
+      console.error("API Error clearAllNotifications:", error);
+      get().fetchNotifications();
+      get().fetchUnreadCount();
     }
   },
 

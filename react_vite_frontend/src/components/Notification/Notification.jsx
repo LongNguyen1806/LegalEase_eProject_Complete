@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { TbBell } from "react-icons/tb";
 import { formatDateTime } from "../../utils/dateUtils";
 import { useNotificationStore } from "../../store/useNotificationStore";
+import { FaTimes } from "react-icons/fa";
+import Swal from "sweetalert2";
 import "./Notification.css";
 
 export default function Notification() {
@@ -11,7 +13,8 @@ export default function Notification() {
   const pollingRef = useRef(null);
   const navigate = useNavigate();
 
-  const { notifications, unreadCount, isLoading, fetchNotifications, fetchUnreadCount, markAsRead, markAllAsRead } = useNotificationStore();
+  const { notifications, unreadCount, isLoading, fetchNotifications, fetchUnreadCount, markAsRead, markAllAsRead, deleteNotification, clearAllNotifications } =
+    useNotificationStore();
 
   const startPolling = () => {
     if (!pollingRef.current) {
@@ -77,6 +80,28 @@ export default function Notification() {
     }
   };
 
+  const handleDeleteItem = (e, id) => {
+    e.stopPropagation();
+    deleteNotification(id);
+  };
+
+  const handleClearAll = (e) => {
+    e.stopPropagation();
+    Swal.fire({
+      title: "Clear all notifications?",
+      text: "All your notifications will be permanently deleted.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Yes, clear all",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        clearAllNotifications();
+      }
+    });
+  };
+
   return (
     <div className='notif-wrapper' ref={dropdownRef}>
       <div className='notif-bell' onClick={toggleDropdown}>
@@ -88,18 +113,24 @@ export default function Notification() {
         <div className='notif-dropdown'>
           <div className='notif-header'>
             <h4>Notifications</h4>
-            {unreadCount > 0 && (
-              <button
-                className='mark-all-btn'
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAllAsRead();
-                }}>
-                Mark all as read
-              </button>
-            )}
+            <div className='notif-actions-header'>
+              {notifications.length > 0 && (
+                <button className='clear-all-btn' onClick={handleClearAll}>
+                  Clear all
+                </button>
+              )}
+              {unreadCount > 0 && (
+                <button
+                  className='mark-all-btn'
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    markAllAsRead();
+                  }}>
+                  Mark all as read
+                </button>
+              )}
+            </div>
           </div>
-
           <div className='notif-list'>
             {isLoading && notifications.length === 0 ? (
               <div className='notif-loading'>Loading...</div>
@@ -109,8 +140,13 @@ export default function Notification() {
                   key={item.notifid}
                   className={`notif-item ${Number(item.isread) === 0 ? "unread" : ""} ${item.linkurl && item.linkurl.trim() !== "" ? "is-link" : ""}`}
                   onClick={() => handleItemClick(item)}>
-                  <span className='notif-message'>{item.message}</span>
-                  <span className='notif-time'>{formatDateTime(item.sentat)}</span>
+                  <div className='notif-content-wrapper'>
+                    <span className='notif-message'>{item.message}</span>
+                    <span className='notif-time'>{formatDateTime(item.sentat)}</span>
+                  </div>
+                  <button className='delete-single-btn' title='Remove' onClick={(e) => handleDeleteItem(e, item.notifid)}>
+                    <FaTimes />
+                  </button>
                 </div>
               ))
             ) : (

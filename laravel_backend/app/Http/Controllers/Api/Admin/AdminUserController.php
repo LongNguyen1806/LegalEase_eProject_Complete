@@ -122,13 +122,36 @@ class AdminUserController extends Controller
     public function getUserDetails($id)
     {
         $user = User::find($id);
-        if (!$user) return response()->json(['success' => false, 'message' => 'User not found'], 404);
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'User not found'], 404);
+        }
 
-        if ($user->roleid == 2) {
-            $user->load(['lawyerProfile']);
+        $formatImageUrl = function ($path, $folder) {
+            if (!$path) return null;
+            $cleanPath = str_contains($path, $folder) ? ltrim($path, '/') : $folder . '/' . ltrim($path, '/');
+            return asset('storage/' . $cleanPath);
+        };
 
-            $offices = DB::table('lawyer_offices')->where('lawyerid', $user->userid)->get();
+        if ($user->roleid == 2) { 
+            $user->load(['lawyerProfile']); 
+
+            if ($user->lawyerProfile && $user->lawyerProfile->profileimage) {
+                $user->lawyerProfile->profileimage = $formatImageUrl($user->lawyerProfile->profileimage, 'lawyer_avatars');
+            }
+
+            $offices = DB::table('lawyer_offices')
+                ->join('locations', 'lawyer_offices.locid', '=', 'locations.locid')
+                ->where('lawyerid', $user->userid)
+                ->select('lawyer_offices.*', 'locations.cityname')
+                ->get();
+
             $achievements = DB::table('lawyer_achievements')->where('lawyerid', $user->userid)->get();
+
+            $specialties = DB::table('lawyer_specialties')
+                ->join('specializations', 'lawyer_specialties.specid', '=', 'specializations.specid')
+                ->where('lawyer_specialties.lawyerid', $user->userid)
+                ->select('specializations.specname', 'lawyer_specialties.specminprice', 'lawyer_specialties.specmaxprice')
+                ->get();
 
             $verifications = \App\Models\LawyerVerification::where('lawyerid', $user->userid)
                 ->orderBy('verifyid', 'desc')
@@ -136,30 +159,20 @@ class AdminUserController extends Controller
 
             $verifications->transform(function ($item) {
                 $docs = $item->documentimage;
-                $fullUrls = [];
 
-                $createUrl = function ($path) {
-                    $cleanPath = ltrim($path, '/');
-                    return asset('storage/' . $cleanPath);
-                };
+                $paths = is_array($docs) ? $docs : json_decode($docs, true);
 
-                if (is_array($docs)) {
-                    foreach ($docs as $path) {
-                        if (!empty($path)) $fullUrls[] = $createUrl($path);
-                    }
-                } elseif (is_string($docs) && !empty($docs)) {
-                    $decoded = json_decode($docs, true);
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                        foreach ($decoded as $path) {
-                            if (!empty($path)) $fullUrls[] = $createUrl($path);
-                        }
-                    } else {
-                        $fullUrls[] = $createUrl($docs);
-                    }
+                if (!is_array($paths)) {
+                    $paths = !empty($docs) ? [$docs] : [];
                 }
 
+                $fullUrls = [];
+                foreach ($paths as $path) {
+                    if (!empty($path)) {
+                        $fullUrls[] = asset('storage/' . ltrim($path, '/'));
+                    }
+                }
                 $item->documentimage = $fullUrls;
-
                 return $item;
             });
 
@@ -173,12 +186,18 @@ class AdminUserController extends Controller
                     'profile' => $user->lawyerProfile,
                     'offices' => $offices,
                     'degrees' => $achievements,
+                    'specialties' => $specialties,
                     'verification_status' => $verification ? $verification->status : 'Not Submitted',
                     'verifications' => $verifications
                 ]
             ]);
-        } elseif ($user->roleid == 3) {
-            $user->load('customerProfile');
+        } elseif ($user->roleid == 3) { 
+            $user->load('customerProfile'); 
+
+            if ($user->customerProfile && $user->customerProfile->profileimage) {
+                $user->customerProfile->profileimage = $formatImageUrl($user->customerProfile->profileimage, 'customer_avatars');
+            }
+
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -189,9 +208,11 @@ class AdminUserController extends Controller
             ]);
         }
 
-        return response()->json(['success' => true, 'data' => ['user' => $user, 'rolename' => 'Admin']]);
+        return response()->json([
+            'success' => true,
+            'data' => ['user' => $user, 'rolename' => 'Admin']
+        ]);
     }
-
     /**
      * Toggles the active status of a user account.
      *

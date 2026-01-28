@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosClient from "../../api/apiAxios";
 import styles from "../../assets/styles/admin/Verification.module.css";
-
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
 import { FaCheck, FaTimes, FaSearchPlus, FaSyncAlt, FaInfoCircle } from "react-icons/fa";
 
 export default function Verification() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [previewImage, setPreviewImage] = useState(null);
 
@@ -131,7 +132,7 @@ export default function Verification() {
                   <td className={styles.center}>#{req.verifyid}</td>
 
                   <td>
-                    <div className={styles.lawyerInfo}>
+                    <div className={styles.lawyerInfo} style={{ cursor: "pointer" }} onClick={() => navigate(`/admin/verifications/${req.lawyerid}`)}>
                       <strong className={styles.lawyerName}>{req.lawyer?.fullname || "Unknown"}</strong>
                       <small className={styles.lawyerEmail}>{req.lawyer?.user?.email}</small>
                       <span className={styles.badgeId}>ID: {req.lawyerid}</span>

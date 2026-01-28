@@ -223,7 +223,7 @@ export default function QAManagement() {
                   {dataList.map((q) => (
                     <tr key={q.questionid}>
                       <td className={styles.textCenter}>{q.questionid}</td>
-                      <td>{q.customer?.customerprofile?.fullname || "Anonymous"}</td>
+                      <td>{q.customer?.customer_profile?.fullname || q.customer?.customerProfile?.fullname || "Anonymous"}</td>
                       <td>{q.content}</td>
                       <td className={styles.actions}>
                         <button className={styles.btnSuccess} onClick={() => handleApprove(q.questionid, "question")}>
@@ -256,7 +256,7 @@ export default function QAManagement() {
                   {dataList.map((a) => (
                     <tr key={a.answerid}>
                       <td className={styles.textCenter}>{a.answerid}</td>
-                      <td>{a.lawyer?.lawyerprofile?.fullname}</td>
+                      <td>{a.lawyer?.lawyer_profile?.fullname || a.lawyer?.lawyerProfile?.fullname || "Lawyer"}</td>
                       <td>
                         <i>{a.question?.content?.substring(0, 30)}...</i>
                       </td>

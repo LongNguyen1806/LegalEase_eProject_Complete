@@ -12,6 +12,7 @@ const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
 const UserManagement = lazy(() => import("./pages/admin/UserManagement")); 
 const UserDetail = lazy(() => import("./pages/admin/UserDetail")); 
 const Verification = lazy(() => import("./pages/admin/Verification"));
+const LawyerVerifyDetail = lazy(() => import("./pages/admin/LawyerVerifyDetail"));
 const ContentCMS = lazy(() => import("./pages/admin/ContentCMS")); 
 const QAManagement = lazy(() => import("./pages/admin/QAManagement")); 
 const SystemLogs = lazy(() => import("./pages/admin/SystemLogs")); 
@@ -124,6 +125,7 @@ function App() {
               <Route path='users' element={<UserManagement />} />
               <Route path='users/:id' element={<UserDetail />} />
               <Route path='verifications' element={<Verification />} />
+              <Route path='verifications/:id' element={<LawyerVerifyDetail />} />
               <Route path='content' element={<ContentCMS />} />
               <Route path='qa' element={<QAManagement />} />
               <Route path='logs' element={<SystemLogs />} />
