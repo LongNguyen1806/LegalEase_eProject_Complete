@@ -55,24 +55,31 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $rules = [
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-            'fullname' => 'required|string|max:100',
-            'roleid'   => 'required|in:2,3',
-            'terms'    => 'accepted',
-        ];
+        'email'    => 'required|email|unique:users,email',
+        'password' => 'required|string|min:8|confirmed',
+        'fullname' => 'required|string|max:100',
+        'roleid'   => 'required|in:2,3',
+        'terms'    => 'accepted',
+        'phonenumber' => [
+            'required',
+            'regex:/^[0-9]{10,11}$/',
+            (int)$request->roleid === 2 
+                ? 'unique:lawyer_profiles,phonenumber' 
+                : 'unique:customer_profiles,phonenumber'
+        ],
+    ];
 
         if ((int)$request->roleid === 2) {
             $rules = array_merge($rules, [
                 'phonenumber'     => 'required|regex:/^[0-9]{10,11}$/|unique:lawyer_profiles,phonenumber',
-                'experienceyears' => 'required|integer|min:0',
-                'licensenumber'    => 'required|string|max:50|unique:lawyer_verifications,licensenumber',
-                'idcardnumber'     => 'required|string|max:20|unique:lawyer_verifications,idcardnumber',
+                'experienceyears' => 'required|integer|min:0|max:50',
+                'licensenumber'    => 'required|string|min:5|max:20|unique:lawyer_verifications,licensenumber',
+                'idcardnumber'     => 'required|string|min:5|max:20|unique:lawyer_verifications,idcardnumber',
                 'documentimages'   => 'required|array|min:1',
-                'documentimages.*' => 'mimes:jpeg,png,jpg,pdf|max:15120',
+                'documentimages.*' => 'mimes:jpeg,png,jpg,pdf|max:5120',
                 'locid'           => 'required|exists:locations,locid',
                 'addressdetail'   => 'required|string|max:255',
-                'profileimage'    => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'profileimage'    => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
                 'specids'         => 'required|array',
                 'specids.*'       => 'exists:specializations,specid',
                 'achievements'    => 'nullable|array',
@@ -360,7 +367,7 @@ class AuthController extends Controller
             ->where('token', $request->otp)
             ->first();
 
-        if (!$resetRecord || Carbon::parse($resetRecord->created_at)->addMinutes(60)->isPast()) {
+        if (!$resetRecord || Carbon::parse($resetRecord->created_at)->addMinutes(10)->isPast()) {
             return response()->json(['success' => false, 'message' => 'Invalid or expired verification code.'], 400);
         }
 

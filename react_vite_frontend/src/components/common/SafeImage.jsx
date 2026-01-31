@@ -1,17 +1,16 @@
-import React from 'react';
+import React from "react";
 import { DOMAIN } from "../../api/apiAxios";
 
-const SafeImage = ({ src, alt, type = 'lawyer', className = '', ...props }) => {
-
+const SafeImage = ({ src, alt, type = "lawyer", className = "", fetchPriority, loading, ...props }) => {
   const config = {
     lawyer: {
-      folder: 'lawyer_avatars',
-      defaultFile: 'default-avatar2.png'
+      folder: "lawyer_avatars",
+      defaultFile: "default-avatar2.png",
     },
     customer: {
-      folder: 'customer_avatars',
-      defaultFile: 'default-avatar3.png'
-    }
+      folder: "customer_avatars",
+      defaultFile: "default-avatar3.png",
+    },
   };
 
   const { folder, defaultFile } = config[type] || config.lawyer;
@@ -20,7 +19,7 @@ const SafeImage = ({ src, alt, type = 'lawyer', className = '', ...props }) => {
 
   const getSource = () => {
     if (!src) return DEFAULT_PATH;
-    if (src.startsWith('blob:') || src.startsWith('data:') || src.startsWith('http')) return src;
+    if (src.startsWith("blob:") || src.startsWith("data:") || src.startsWith("http")) return src;
 
     const cleanSrc = src.includes(folder) ? src : `${folder}/${src}`;
     return `${DOMAIN}/storage/${cleanSrc}`;
@@ -30,11 +29,15 @@ const SafeImage = ({ src, alt, type = 'lawyer', className = '', ...props }) => {
     <img
       {...props}
       src={getSource()}
-      alt={alt || 'Avatar'}
+      alt={alt || "Avatar"}
       className={className}
+      width="150"
+      height="150"
+      fetchPriority={fetchPriority}
+      loading={loading || "lazy"}
       onError={(e) => {
-        e.target.onerror = null; 
-        e.target.src = DEFAULT_PATH; 
+        e.target.onerror = null;
+        e.target.src = DEFAULT_PATH;
       }}
     />
   );

@@ -83,17 +83,23 @@ export default function Register() {
 
       <form onSubmit={handleSubmit} className='register-form'>
         <div className='form-group'>
-          <label>Full Name</label>
+          <label>
+            Full Name <span className='required-star'>*</span>
+          </label>
           <input name='fullname' type='text' value={formData.fullname} onChange={handleChange} required />
         </div>
 
         <div className='form-group'>
-          <label>Email</label>
+          <label>
+            Email <span className='required-star'>*</span>
+          </label>
           <input name='email' type='email' value={formData.email} onChange={handleChange} required />
         </div>
 
         <div className='form-group'>
-          <label>Phone Number</label>
+          <label>
+            Phone Number <span className='required-star'>*</span>
+          </label>
           <input name='phonenumber' type='text' value={formData.phonenumber} onChange={handleChange} />
         </div>
 

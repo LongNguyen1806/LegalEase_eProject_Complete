@@ -230,29 +230,92 @@ export default function AdminAppointments() {
       {isModalOpen && selectedApp && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <h2>Appointment Details #{selectedApp.appointid}</h2>
-            <div className={styles.modalGrid}>
-              <div>
-                <strong>Lawyer:</strong> {selectedApp.lawyer?.fullname}
+            <div className={styles.modalHeader}>
+              <h2>Appointment Dossier #{selectedApp.appointid}</h2>
+              {getStatusBadge(selectedApp.status)}
+            </div>
+
+            <div className={styles.modalBody}>
+              <div className={styles.profileSection}>
+                <div className={styles.profileCard}>
+                  <h4 className={styles.sectionTitle}>Lawyer Information</h4>
+                  <div className={styles.cardHeader}>
+                    <SafeImage src={selectedApp.lawyer?.profileimage} type="lawyer" className={styles.detailAvatar} />
+                    <div className={styles.cardMainInfo}>
+                      <span className={styles.fullName}>{selectedApp.lawyer?.fullname}</span>
+                      <span className={styles.subInfo}>{selectedApp.lawyer?.user?.email}</span>
+                      <span className={styles.verifiedTag}>{selectedApp.lawyer?.isverified ? "✓ Verified Professional" : "Unverified"}</span>
+                    </div>
+                  </div>
+                  <div className={styles.cardStats}>
+                    <p><strong>Experience:</strong> {selectedApp.lawyer?.experienceyears} Years</p>
+                    <p><strong>Specialty:</strong> {selectedApp.lawyer?.specializations?.map(s => s.specname).join(", ") || "General Practice"}</p>
+                    <p><strong>Phone:</strong> {selectedApp.lawyer?.phonenumber || "Not provided"}</p>
+                  </div>
+                </div>
+
+                <div className={styles.profileCard}>
+                  <h4 className={styles.sectionTitle}>Customer Information</h4>
+                  <div className={styles.cardHeader}>
+                    <SafeImage src={selectedApp.customer?.profileimage} type="customer" className={styles.detailAvatar} />
+                    <div className={styles.cardMainInfo}>
+                      <span className={styles.fullName}>{selectedApp.customer?.fullname}</span>
+                      <span className={styles.subInfo}>{selectedApp.customer?.user?.email}</span>
+                      <span className={styles.phoneInfo}>{selectedApp.customer?.phonenumber}</span>
+                    </div>
+                  </div>
+                  <p className={styles.customerContext}>Registered Client</p>
+                </div>
               </div>
-              <div>
-                <strong>Customer:</strong> {selectedApp.customer?.fullname}
+
+              <div className={styles.infoGrid}>
+                <div className={styles.infoGroup}>
+                  <h4 className={styles.sectionTitle}>Service Details</h4>
+                  <p><strong>Service Package:</strong> {selectedApp.packagename}</p>
+                  <p><strong>Duration:</strong> {selectedApp.duration} Minutes</p>
+                  <p><strong>Scheduled:</strong> {formatDisplayTime(selectedApp.starttime)} | {formatFullDate(selectedApp.slot?.availabledate)}</p>
+                </div>
+
+                <div className={styles.infoGroup}>
+                  <h4 className={styles.sectionTitle}>Office Location</h4>
+                  <p><strong>City/Province:</strong> {selectedApp.lawyer?.office?.location?.cityname || "N/A"}</p>
+                  <p><strong>Address:</strong> {selectedApp.lawyer?.office?.addressdetail || "In-person consultation"}</p>
+                </div>
               </div>
-              <div>
-                <strong>Service:</strong> {selectedApp.packagename}
+
+              <div className={styles.financeSection}>
+                <h4 className={styles.sectionTitle}>Financial Records</h4>
+                {selectedApp.invoice ? (
+                  <div className={styles.invoiceDetails}>
+                    <div className={styles.invoiceRow}>
+                      <span>Transaction ID: <strong>{selectedApp.invoice.transactionno}</strong></span>
+                      <span>Amount: <strong className={styles.invoiceSuccess}>{formatMoney(selectedApp.invoice.amount, "$")}</strong></span>
+                    </div>
+                    <div className={styles.invoiceRow}>
+                      <span>Method: {selectedApp.invoice.paymentmethod}</span>
+                      <span>Payment Status: <strong>{selectedApp.invoice.status}</strong></span>
+                    </div>
+                    {selectedApp.invoice.refundamount > 0 && (
+                      <div className={styles.refundRow}>
+                        Refunded Amount: <strong>{formatMoney(selectedApp.invoice.refundamount, "$")}</strong>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <p className={styles.unpaidWarning}>No invoice generated for this appointment.</p>
+                )}
               </div>
-              <div>
-                <strong>Time:</strong> {formatDisplayTime(selectedApp.starttime)} - {formatFullDate(selectedApp.slot?.availabledate)}
-              </div>
-              <div className={styles.modalNoteArea}>
-                <strong>Note:</strong>
-                <p>{selectedApp.note || "No notes provided."}</p>
+
+              <div className={styles.noteSection}>
+                <h4 className={styles.sectionTitle}>Case Description / Notes</h4>
+                <div className={styles.noteBox}>
+                  {selectedApp.note || "No additional notes provided by the customer."}
+                </div>
               </div>
             </div>
-            <div className={styles.modalActions}>
-              <button className={styles.clearBtn} onClick={() => setIsModalOpen(false)}>
-                Close
-              </button>
+
+            <div className={styles.modalFooter}>
+              <button className={styles.closeBtn} onClick={() => setIsModalOpen(false)}>Close Dossier</button>
             </div>
           </div>
         </div>

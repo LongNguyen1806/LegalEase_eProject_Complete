@@ -14,6 +14,16 @@ export default function RevenueManagement() {
   const [currentPage, setCurrentPage] = useState(1);
   const queryClient = useQueryClient();
 
+  const availableYears = useMemo(() => {
+    const startYear = 2025;
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let y = currentYear; y >= startYear; y--) {
+      years.push(y);
+    }
+    return years;
+  }, []);
+
   const { data: stats, isLoading: loadingStats } = useQuery({
     queryKey: ["revenueStats", filter, currentPage],
     queryFn: async () => {
@@ -57,8 +67,10 @@ export default function RevenueManagement() {
     const grossBooking = stats.revenue_sources.booking_gross || 0;
     const baseGMV = grossBooking / 1.1;
     const totalLawyerPayout = baseGMV * 0.8;
-    return { baseGMV, totalLawyerPayout };
-  }, [stats]);
+    const totalServiceFees = stats.revenue_sources.service_fee_total || 0;
+    const totalCommissions = stats.revenue_sources.commission_total || 0;
+   return { baseGMV, totalLawyerPayout, totalServiceFees, totalCommissions }; 
+}, [stats]);
 
   const currentTransactions = stats?.recent_transactions?.data || [];
   const totalPages = stats?.recent_transactions?.last_page || 0;
@@ -86,11 +98,22 @@ export default function RevenueManagement() {
           </div>
 
           {activeTab === "overview" && (
-            <select value={filter} onChange={(e) => setFilter(e.target.value)} className={styles.select}>
+            <select
+              value={filter}
+              onChange={(e) => {
+                setFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className={styles.select}>
               <option value='all'>All Time</option>
               <option value='day'>Today</option>
               <option value='month'>This Month</option>
-              <option value='year'>This Year</option>
+
+              {availableYears.map((year) => (
+                <option key={year} value={year.toString()}>
+                  Year {year}
+                </option>
+              ))}
             </select>
           )}
         </div>

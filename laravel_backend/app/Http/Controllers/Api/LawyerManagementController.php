@@ -48,7 +48,7 @@ class LawyerManagementController extends Controller
         $validator = Validator::make($request->all(), [
             'fullname'             => 'sometimes|required|string|max:100',
             'phonenumber'          => 'sometimes|required|string|max:20',
-            'experienceyears'      => 'sometimes|nullable|integer|min:0',
+            'experienceyears'      => 'sometimes|nullable|integer|min:0',  
             'bio'                  => 'sometimes|nullable|string',
             'profileimage'         => 'sometimes|nullable|image|mimes:jpeg,png,jpg,gif|max:8192',
             'specialization_ids'   => 'sometimes|nullable|array',
@@ -204,10 +204,10 @@ class LawyerManagementController extends Controller
         $user = Auth::user();
 
         $validator = Validator::make($request->all(), [
-            'idcardnumber'     => 'required|string|max:20',
-            'licensenumber'    => 'required|string|max:50',
+            'idcardnumber'     => 'required|string|min:5|max:20',
+            'licensenumber'    => 'required|string|min:5|max:20',
             'documentimages'   => 'required|array|min:1',
-            'documentimages.*' => 'mimes:jpeg,png,jpg,pdf|max:51200',
+            'documentimages.*' => 'mimes:jpeg,png,jpg,pdf|max:5120',
         ]);
 
         if ($validator->fails()) {

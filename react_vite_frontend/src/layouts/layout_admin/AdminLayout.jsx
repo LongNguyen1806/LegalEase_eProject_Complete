@@ -52,7 +52,7 @@ export default function AdminLayout() {
       }
       return res.data;
     },
-    refetchInterval: 20000,
+    refetchInterval: 15000,
     refetchOnWindowFocus: true,
   });
 

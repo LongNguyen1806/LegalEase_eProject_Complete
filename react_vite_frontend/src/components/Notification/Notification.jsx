@@ -21,7 +21,7 @@ export default function Notification() {
       fetchUnreadCount();
       pollingRef.current = setInterval(() => {
         fetchUnreadCount();
-      }, 15000);
+      }, 10000);
     }
   };
 

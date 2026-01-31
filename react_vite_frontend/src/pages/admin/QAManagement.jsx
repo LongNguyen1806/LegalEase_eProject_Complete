@@ -62,6 +62,7 @@ export default function QAManagement() {
       const res = await axiosClient.get(url);
       return res.data.success ? res.data.data : [];
     },
+    refetchInterval: 15000,
     staleTime: 30000,
   });
 

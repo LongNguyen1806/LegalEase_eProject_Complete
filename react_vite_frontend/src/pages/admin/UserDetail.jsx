@@ -103,7 +103,20 @@ export default function UserDetail() {
               <div className={styles.bioBox}>{profile?.bio || "No biography provided."}</div>
             </div>
           </div>
-
+          <div className={styles.card}>
+            <h3>⚖️ Legal Specialties</h3>
+            {specialties?.length ? (
+              <div className={styles.infoGrid}>
+                {specialties.map((s, idx) => (
+                  <div key={idx} className={styles.infoItem}>
+                    <span className={styles.infoValue}>{s.specname}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className={styles.mutedItalic}>No specialties listed.</p>
+            )}
+          </div>
           <div className={styles.card}>
             <h3>📂 Verification Documents</h3>
             {verifications && verifications.length > 0 ? (
@@ -157,7 +170,9 @@ export default function UserDetail() {
               {offices?.length ? (
                 <ul className={styles.detailList}>
                   {offices.map((o) => (
-                    <li key={o.officeid}>{o.addressdetail}</li>
+                    <li key={o.officeid}>
+                      <strong>{o.cityname || "Unknown City"}:</strong> {o.addressdetail}
+                    </li>
                   ))}
                 </ul>
               ) : (

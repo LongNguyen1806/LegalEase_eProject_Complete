@@ -30,7 +30,6 @@ class AppointmentController extends Controller
 {
     use HasNotifications;
 
-
     /**
      * Automatically cancel expired pending appointments
      *
@@ -192,7 +191,7 @@ class AppointmentController extends Controller
                 ->where('specid', $specId)
                 ->first();
 
-            $minPrice = $lawyerSpecSetting ? $lawyerSpecSetting->specminprice : 300;
+            $minPrice = $lawyerSpecSetting ? $lawyerSpecSetting->specminprice : 100;
             $totalAmount = ($request->duration / 60) * $minPrice * 1.1;
 
             PaymentInvoice::create([
@@ -248,7 +247,9 @@ class AppointmentController extends Controller
     {
         $user = Auth::user();
         if ($user->roleid != 2) return response()->json(['message' => 'Unauthorized'], 403);
+
         $this->autoCancelExpired($user->userid, $user->roleid);
+        
         DB::beginTransaction();
         try {
             $appointment = Appointment::with(['userCustomer', 'slot'])

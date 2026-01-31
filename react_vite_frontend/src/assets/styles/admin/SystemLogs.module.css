@@ -1,0 +1,162 @@
+.systemLogs {
+  padding: 20px;
+}
+
+.logsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.logsHeader h1 {
+  margin: 0;
+}
+
+.btnRefresh {
+  padding: 8px 16px;
+  background: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btnRefresh:hover {
+  background: #1677d2;
+}
+
+.logsDesc {
+  margin: 12px 0 16px;
+  color: #666;
+}
+
+.logsTableCard {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.logsTableWrapper {
+  overflow-x: auto;
+}
+
+.logsTableWrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.logsTableWrapper thead {
+  background: #333;
+  color: white;
+}
+
+.logsTableWrapper th,
+.logsTableWrapper td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.center {
+  text-align: center;
+}
+
+.muted {
+  color: #999;
+}
+
+.even {
+  background: #ffffff;
+}
+
+.odd {
+  background: #f9f9f9;
+}
+
+.adminEmail {
+  font-weight: bold;
+  color: #1890ff;
+}
+
+.logAction {
+  font-weight: 500;
+}
+
+.success {
+  color: #22c55e;
+}
+
+.danger {
+  color: #ef4444;
+}
+
+.warning {
+  color: #f59e0b;
+}
+
+.empty {
+  text-align: center;
+  padding: 30px;
+  color: #888;
+}
+
+.logsLoading {
+  padding: 20px;
+}
+
+.paginationControls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  gap: 15px;
+  border-top: 1px solid #eee;
+  background: #fff;
+}
+
+.btnPage {
+  padding: 6px 12px;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.btnPage:hover:not(:disabled) {
+  color: #1890ff;
+  border-color: #1890ff;
+}
+
+.btnPage:disabled {
+  cursor: not-allowed;
+  color: rgba(0, 0, 0, 0.25);
+  background: #f5f5f5;
+  border-color: #d9d9d9;
+}
+
+.pageInfo {
+  font-size: 14px;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .systemLogs {
+    padding: 12px;
+  }
+
+  .logsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .logsTableWrapper table {
+    font-size: 14px;
+  }
+}

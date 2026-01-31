@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin; 
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Appointment;
 use App\Models\PaymentInvoice;
-use App\Traits\HasAuditLog; 
+use App\Traits\HasAuditLog;
 
 
 class AdminAppointmentController extends Controller
@@ -27,11 +27,17 @@ class AdminAppointmentController extends Controller
     {
         try {
             $query = Appointment::with([
-                'lawyer.user',
-                'customer.user',
-                'slot',
-                'invoice'
-            ]);
+            'lawyer' => function ($q) {
+                $q->with([
+                    'user:userid,email,isactive',
+                    'office.location',        
+                    'specializations:specid,specname'
+                ]);
+            },
+            'customer.user',
+            'slot',
+            'invoice'
+        ]);
 
             if ($request->filled('keyword')) {
                 $kw = $request->keyword;
@@ -115,24 +121,41 @@ class AdminAppointmentController extends Controller
     }
 
     /**
-     * Retrieves detailed information for a specific appointment.
-     * Eager loads lawyer, customer, slot, and invoice details.
+     * Display the comprehensive details of a specific appointment for administrative review.
+     * Retrieves full lawyer and customer profiles, office locations, specialized fields,
+     * and associated financial transaction records.
      *
-     * @param mixed $id
+     * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
         $appointment = Appointment::with([
-            'lawyer.user',
-            'customer.user',
+            'lawyer' => function ($query) {
+                $query->with([
+                    'user:userid,email,isactive',
+                    'specializations:specid,specname',
+                    'office.location'
+                ]);
+            },
+            'customer' => function ($query) {
+                $query->with('user:userid,email');
+            },
             'slot',
             'invoice'
         ])->find($id);
 
-        if (!$appointment) return response()->json(['message' => 'Not found'], 404);
+        if (!$appointment) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Appointment details not found.'
+            ], 404);
+        }
 
-        return response()->json(['success' => true, 'data' => $appointment]);
+        return response()->json([
+            'success' => true,
+            'data' => $appointment
+        ]);
     }
 
     /**
@@ -147,7 +170,7 @@ class AdminAppointmentController extends Controller
             DB::beginTransaction();
 
             $appointment = Appointment::findOrFail($id);
-            
+
             PaymentInvoice::where('appointid', $id)->delete();
 
             $appointment->delete();

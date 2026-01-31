@@ -194,10 +194,11 @@ class AdminContentController extends Controller
     }
 
     /**
-     * Retrieves the latest system audit logs.
+     * Retrieves a paginated list of system audit logs.
      *
-     * Fetches the most recent 50 logs, eager loading the associated admin user details,
-     * ordered by timestamp.
+     * Fetches logs with a pagination limit of 10 records per page, 
+     * eager loading the associated admin user details (userid and email), 
+     * ordered by the most recent timestamp.
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -205,9 +206,11 @@ class AdminContentController extends Controller
     {
         $logs = SystemAuditLog::with('admin:userid,email')
             ->orderBy('timestamp', 'desc')
-            ->limit(50)
-            ->get();
+            ->paginate(10);
 
-        return response()->json(['success' => true, 'data' => $logs]);
+        return response()->json([
+            'success' => true,
+            'data' => $logs
+        ]);
     }
 }

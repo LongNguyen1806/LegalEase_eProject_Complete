@@ -1,32 +1,25 @@
-import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axiosClient, { DOMAIN } from "../../api/apiAxios";
+import axiosClient from "../../api/apiAxios";
 import styles from "../../assets/styles/client/StyleCustomer/CustomerAppointments.module.css";
+import { useQuery } from "@tanstack/react-query";
 import SafeImage from "../../components/common/SafeImage";
 
 export default function CustomerAppointments() {
-  const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchList = async () => {
-      try {
-        const res = await axiosClient.get("/customer/appointments");
-        if (res.data.success) {
-          setAppointments(res.data.data);
-        }
-      } catch (error) {
-        console.error("Error loading list:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchList();
-  }, []);
+  const { data: appointments = [], isLoading: loading } = useQuery({
+    queryKey: ["customerAppointments"],
+    queryFn: async () => {
+      const res = await axiosClient.get("/customer/appointments");
+      return res.data.success ? res.data.data : [];
+    },
+    refetchInterval: 10000,
+    staleTime: 30000,
+    refetchOnWindowFocus: true,
+    retry: false,
+  });
 
   const getStatusBadge = (status) => {
-    
     switch (status) {
       case "Pending":
         return <span className={`${styles.badge} ${styles.badgePending}`}>⏳ Pending</span>;
@@ -87,12 +80,7 @@ export default function CustomerAppointments() {
 
                 <div className={styles.cardBody}>
                   <div className={styles.lawyerInfo}>
-                    <SafeImage
-                      src={app.lawyer?.profileimage}
-                      type="lawyer"
-                      alt={app.lawyer?.fullname || "Lawyer Avatar"}
-                      className={styles.lawyerAvatar}
-                    />
+                    <SafeImage src={app.lawyer?.profileimage} type='lawyer' alt={app.lawyer?.fullname || "Lawyer Avatar"} className={styles.lawyerAvatar} />
                     <div>
                       <h4 className={styles.lawyerName}>{app.lawyer?.fullname || "Anonymous Lawyer"}</h4>
                       <p className={styles.serviceName}>📦 {app.packagename}</p>

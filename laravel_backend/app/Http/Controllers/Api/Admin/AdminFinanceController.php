@@ -94,9 +94,12 @@ class AdminFinanceController extends Controller
             if ($period == 'day') {
                 $query->whereDate('createdat', $now->toDateString());
             } elseif ($period == 'month') {
-                $query->whereMonth('createdat', $now->month)->whereYear('createdat', $now->year);
+                $query->whereMonth('createdat', $now->month)
+                    ->whereYear('createdat', $now->year);
             } elseif ($period == 'year') {
                 $query->whereYear('createdat', $now->year);
+            } elseif (is_numeric($period) && strlen($period) == 4) {
+                $query->whereYear('createdat', $period);
             }
 
             $allInvoices = (clone $query)

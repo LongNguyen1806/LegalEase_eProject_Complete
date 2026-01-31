@@ -76,6 +76,14 @@ export default function ProfileSetting() {
 
     const { current_password, new_password, new_password_confirmation } = passwordData;
 
+    if (!(formData.fullname || "").trim()) {
+      return toast.error("Full Name cannot be left blank.");
+    }
+
+    if (!(formData.phonenumber || "").trim()) {
+      return toast.error("Phone Number cannot be left blank.");
+    }
+
     if (new_password) {
       if (new_password.length < 8) {
         return toast.error("New password must be at least 8 characters long.");
@@ -127,7 +135,7 @@ export default function ProfileSetting() {
         const updatedUser = {
           ...user,
           fullname: formData.fullname,
-          avatar: res.data.data.profileimage 
+          avatar: res.data.data.profileimage,
         };
 
         login(updatedUser, localStorage.getItem("CLIENT_ACCESS_TOKEN"));
@@ -153,12 +161,7 @@ export default function ProfileSetting() {
           <form onSubmit={handleSubmit}>
             <h3 className='section-title'>👤 Personal Information</h3>
             <div className='avatar-section'>
-             <SafeImage
-                src={previewUrl}
-                type="customer"
-                alt="Avatar Preview"
-                className="avatar-preview"
-              />
+              <SafeImage src={previewUrl} type='customer' alt='Avatar Preview' className='avatar-preview' />
               <div className='upload-btn-wrapper'>
                 <button type='button' className='btn-upload'>
                   Change Avatar

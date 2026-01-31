@@ -119,6 +119,12 @@ export default function ProfessionalTab({ data, specsMaster, reload }) {
   });
 
   const handleUpdatePrice = () => {
+    if (minPrice < 0 || maxPrice < 0) {
+      return toast.error("Price cannot be negative!");
+    }
+    if (Number(minPrice) > Number(maxPrice)) {
+      return toast.error("Min price cannot be greater than Max price!");
+    }
     updatePriceMutation.mutate({
       specminprice: minPrice,
       specmaxprice: maxPrice,
@@ -126,6 +132,12 @@ export default function ProfessionalTab({ data, specsMaster, reload }) {
   };
 
   const handleSaveExpertise = () => {
+    if (expYears === "" || expYears === null) {
+      return toast.error("Please enter your years of experience!");
+    }
+    if (expYears < 0) {
+      return toast.error("Years of experience cannot be negative!");
+    }
     expertiseMutation.mutate({
       fullname: profile.fullname,
       phonenumber: profile.phonenumber,
@@ -187,7 +199,7 @@ export default function ProfessionalTab({ data, specsMaster, reload }) {
         </h3>
         <div className={styles.formGroup}>
           <label className={styles.label}>Years of Experience</label>
-          <input type='number' className={styles.inputSmall} value={expYears} max={50} onChange={(e) => setExpYears(e.target.value)} />
+          <input type='number' className={styles.inputSmall} value={expYears} min={0} max={50} onChange={(e) => setExpYears(e.target.value)} />
         </div>
 
         <div className={styles.formGroup}>

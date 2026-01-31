@@ -1,81 +1,128 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import axiosClient from "../../api/apiAxios";
-import "../../assets/styles/admin/SystemLogs.css";
+import styles from "../../assets/styles/admin/SystemLogs.module.css";
 
 export default function SystemLogs() {
-  const [logs, setLogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchLogs = async () => {
-    setLoading(true);
-    try {
-      const res = await axiosClient.get("/admin/logs");
-      if (res.data.success) {
-        setLogs(res.data.data);
-      }
-    } catch (error) {
-      console.error("Error loading logs:", error);
-    } finally {
-      setLoading(false);
-    }
+  const { 
+  data: queryResponse, 
+  isLoading, 
+  isFetching, 
+  refetch 
+} = useQuery({
+  queryKey: ["adminLogs", currentPage],
+  queryFn: async () => {
+    const res = await axiosClient.get(`/admin/logs?page=${currentPage}`);
+    return res.data;
+  },
+  staleTime: 30000, 
+  refetchOnWindowFocus: true,
+  keepPreviousData: true 
+});
+
+  const logs = queryResponse?.data?.data || [];
+  const pagination = {
+    current_page: queryResponse?.data?.current_page || 1,
+    last_page: queryResponse?.data?.last_page || 1,
   };
 
-  useEffect(() => {
-    fetchLogs();
-  }, []);
-
-  const getActionColor = (actionContent) => {
+  const getActionClass = (actionContent) => {
     if (!actionContent) return "";
-    if (actionContent.includes("Deleted")) return "danger";
-    if (actionContent.includes("Approved") || actionContent.includes("Created")) return "success";
-    if (actionContent.includes("Rejected") || actionContent.includes("Deactivated")) return "warning";
+    const content = actionContent.toLowerCase();
+    if (content.includes("deleted")) return styles.danger;
+    if (content.includes("approved") || content.includes("created")) return styles.success;
+    if (content.includes("rejected") || content.includes("deactivated")) return styles.warning;
     return "";
   };
 
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= pagination.last_page) {
+      setCurrentPage(newPage);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const showLoading = isLoading || isFetching;
+
   return (
-    <div className='system-logs'>
-      <div className='logs-header'>
+    <div className={styles.systemLogs}>
+      <div className={styles.logsHeader}>
         <h1>📜 System Logs (Audit Logs)</h1>
-        <button className='btn-refresh' onClick={fetchLogs}>
-          Refresh
+        <button 
+          className={styles.btnRefresh} 
+          onClick={() => refetch()} 
+          disabled={isFetching}
+        >
+          {isFetching ? "Refreshing..." : "Refresh"}
         </button>
       </div>
 
-      <p className='logs-desc'>Displaying the 50 most recent actions performed by administrators.</p>
+      <p className={styles.logsDesc}>Displaying 10 actions per page.</p>
 
-      {loading ? (
-        <p className='logs-loading'>Loading data...</p>
+      {showLoading && logs.length === 0 ? (
+        <p className={styles.logsLoading}>Loading data...</p>
       ) : (
-        <div className='logs-table-card'>
-          <div className='logs-table-wrapper'>
-            <table>
+        <div className={styles.logsTableCard}>
+          <div className={styles.logsTableWrapper}>
+            <table style={{ opacity: isFetching ? 0.6 : 1, transition: 'opacity 0.2s' }}>
               <thead>
                 <tr>
                   <th>Timestamp</th>
                   <th>Performed By (Admin)</th>
                   <th>Action</th>
-                  <th className='center'>Log ID</th>
+                  <th className={styles.center}>Log ID</th>
                 </tr>
               </thead>
               <tbody>
                 {logs.length > 0 ? (
                   logs.map((log, index) => (
-                    <tr key={log.logid} className={index % 2 === 0 ? "even" : "odd"}>
+                    <tr 
+                      key={log.logid} 
+                      className={index % 2 === 0 ? styles.even : styles.odd}
+                    >
                       <td>{new Date(log.timestamp).toLocaleString("EN-US")}</td>
-                      <td className='admin-email'>{log.admin ? log.admin.email : `Admin ID: ${log.adminid}`}</td>
-                      <td className={`log-action ${getActionColor(log.action)}`}>{log.action}</td>
-                      <td className='center muted'>#{log.logid}</td>
+                      <td className={styles.adminEmail}>
+                        {log.admin ? log.admin.email : `Admin ID: ${log.adminid}`}
+                      </td>
+                      <td className={`${styles.logAction} ${getActionClass(log.action)}`}>
+                        {log.action}
+                      </td>
+                      <td className={`${styles.center} ${styles.muted}`}>#{log.logid}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan='4' className='empty'>
+                    <td colSpan='4' className={styles.empty}>
                       No activity logs found.
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
+          </div>
+
+          <div className={styles.paginationControls}>
+            <button 
+              disabled={pagination.current_page === 1 || isFetching}
+              onClick={() => handlePageChange(pagination.current_page - 1)}
+              className={styles.btnPage}
+            >
+              Previous
+            </button>
+
+            <span className={styles.pageInfo}>
+              Page <strong>{pagination.current_page}</strong> of {pagination.last_page}
+            </span>
+
+            <button 
+              disabled={pagination.current_page === pagination.last_page || isFetching}
+              onClick={() => handlePageChange(pagination.current_page + 1)}
+              className={styles.btnPage}
+            >
+              Next
+            </button>
           </div>
         </div>
       )}

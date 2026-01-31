@@ -40,7 +40,8 @@ export default function MyAppointments() {
       const res = await axiosClient.get(`/customer/my-appointments/${id}`);
       return res.data.data;
     },
-    refetchInterval: 5000, 
+    placeholderData: (previousData) => previousData,
+    refetchInterval: 10000, 
     enabled: !!id,
     retry: 1,
   });
@@ -164,6 +165,8 @@ export default function MyAppointments() {
                   type="lawyer"
                   alt={appointment.lawyer?.fullname || "Lawyer Avatar"}
                   className={styles.lawyerAvatar}
+                  fetchPriority="high"
+                  loading="eager"
                 />
                 <div className={styles.lawyerDetails}>
                   <h3>{appointment.lawyer?.fullname}</h3>

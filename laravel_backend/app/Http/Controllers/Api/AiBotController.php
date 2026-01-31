@@ -28,16 +28,21 @@ class AiBotController extends Controller
         try {
             $intent = $this->detectIntent($userQuestion);
             $contextData = $this->buildContextData($intent, $userQuestion);
+            $suggestedLawyers = is_array($contextData) ? ($contextData['suggested_lawyers'] ?? []) : [];
             $systemPrompt = $this->getSystemPrompt($intent, $contextData);
             $aiResponse = $this->callLlamaApi($systemPrompt, $userQuestion);
 
-            $responseData = ['question' => $userQuestion, 'answer' => $aiResponse];
+            $answer = $this->sanitizeLawyerLinksInAnswer($aiResponse, !empty($suggestedLawyers));
+            $responseData = ['question' => $userQuestion, 'answer' => $answer];
+            if (!empty($suggestedLawyers)) {
+                $responseData['suggested_lawyers'] = $suggestedLawyers;
+            }
 
             if ($user) {
                 AiChatHistory::create([
                     'userid'   => $user->userid,
                     'question' => $userQuestion,
-                    'answer'   => $aiResponse,
+                    'answer'   => $answer,
                 ]);
                 $responseData['chat_id'] = $user->userid;
             }
@@ -64,6 +69,9 @@ class AiBotController extends Controller
         if ($this->containsAny($q, ['location', 'address', 'where', 'city', 'area', 'office', 'địa chỉ', 'ở đâu', 'khu vực', 'văn phòng'])) {
             return 'LOCATION';
         }
+        if ($this->containsAny($q, ['find lawyer', 'find a lawyer', 'lawyer in', 'recommend', 'list of lawyers', 'which lawyer', 'tìm luật sư', 'luật sư ở', 'luật sư tại', 'cần luật sư', 'có luật sư', 'luật sư về', 'luật sư nào', 'luật sư'])) {
+            return 'FIND_LAWYER';
+        }
         if ($this->containsAny($q, ['specialty', 'specialties', 'field', 'practice area', 'expertise', 'type of law', 'lĩnh vực', 'chuyên môn', 'chuyên ngành'])) {
             return 'SPECIALTY';
         }
@@ -73,15 +81,13 @@ class AiBotController extends Controller
         if ($this->containsAny($q, ['book', 'booking', 'appointment', 'schedule', 'how to book', 'make an appointment', 'set up', 'đặt lịch', 'đặt hẹn'])) {
             return 'BOOKING';
         }
-        if ($this->containsAny($q, ['find lawyer', 'find a lawyer', 'lawyer in', 'recommend', 'list of lawyers', 'which lawyer', 'tìm luật sư', 'luật sư ở', 'luật sư tại', 'cần luật sư'])) {
-            return 'FIND_LAWYER';
-        }
         if ($this->containsAny($q, [
             'law', 'legal', 'regulation', 'article', 'clause', 'right', 'rights',
             'luật', 'điều khoản', 'quy định', 'văn bản',
             'product', 'defective', 'defect', 'liability', 'consumer', 'standards', 'technical',
             'compensation', 'damage', 'contract', 'claim', 'warranty', 'responsibility',
-            'fault', 'obligation', 'civil', 'guarantee', 'quality', 'considered', 'meets'
+            'fault', 'obligation', 'civil', 'guarantee', 'quality', 'considered', 'meets',
+            'marriage', 'family', 'divorce', 'dissolution', 'ly hôn', 'hôn nhân', 'gia đình', 'thủ tục ly hôn', 'luật hôn nhân'
         ])) {
             return 'LEGAL_KNOWLEDGE';
         }
@@ -104,17 +110,25 @@ class AiBotController extends Controller
             case 'SPECIALTY':
                 return $this->querySpecialties($keywords);
             case 'EXPERIENCE':
-                return $this->queryExperienceContext();
+                $exp = $this->queryExperienceContext();
+                return [
+                    'context' => $exp['context'],
+                    'suggested_lawyers' => $this->formatSuggestedLawyers($exp['lawyers']),
+                ];
             case 'BOOKING':
                 return $this->queryBookingGuide();
             case 'LEGAL_KNOWLEDGE':
-                return $this->queryLegalKnowledgeBase($keywords);
+                return $this->queryLegalKnowledgeBase($keywords, $question);
             case 'FIND_LAWYER':
-                return $this->queryLawyersForContext($question, $keywords);
+                $find = $this->queryLawyersForContext($question, $keywords);
+                return [
+                    'context' => $find['context'],
+                    'suggested_lawyers' => $this->formatSuggestedLawyers($find['lawyers']),
+                ];
             case 'GREETING':
                 return '';
             case 'GENERAL':
-                $kb = $this->queryLegalKnowledgeBase($keywords);
+                $kb = $this->queryLegalKnowledgeBase($keywords, $question);
                 if ($kb !== '') {
                     return $kb;
                 }
@@ -124,15 +138,25 @@ class AiBotController extends Controller
         }
     }
 
-    private function getSystemPrompt(string $intent, string $contextData): string
+    /** @param string|array{context: string, suggested_lawyers: array} $contextData */
+    private function getSystemPrompt(string $intent, $contextData): string
     {
-        $base = "You are the LegalEase legal assistant. RULES:\n" .
-            "1. Reply in English only.\n" .
-            "2. Use ONLY the CONTEXT data below. If CONTEXT is empty or insufficient, say: 'There is no information on this in our system. Please contact a lawyer or visit our Find Lawyers page.'\n" .
-            "3. Be professional and neutral. Do not conclude guilt or legal liability.\n" .
-            "4. When listing lawyers, use format: [Name](/lawyers/{id}).\n";
+        $contextString = is_array($contextData) ? $contextData['context'] : $contextData;
+        $hasSuggestedLawyers = is_array($contextData) && !empty($contextData['suggested_lawyers']);
 
-        $contextLabel = $contextData === '' ? "NO DATA" : $contextData;
+        $base = "You are the LegalEase legal assistant. RULES:\n" .
+            "1. Reply in the SAME language as the user's question: if the user asked mainly in Vietnamese, reply in Vietnamese; if mainly in English, reply in English. Do not mix—match the user's language.\n" .
+            "2. Use ONLY the CONTEXT data below. If CONTEXT is empty or insufficient, say: 'There is no information on this in our system. Please visit LegalEase Find Lawyers page on this site to find a lawyer.'\n" .
+            "3. Be professional and neutral. Do not conclude guilt or legal liability.\n" .
+            "4. Always recommend finding a lawyer on LegalEase (this website). Never suggest other platforms, Google search, or external legal services. Say 'visit our Find Lawyers page' or 'use LegalEase to find a lawyer'.\n" .
+            "5. Never use the word 'CONTEXT' in your reply to the user. If you do not have the content of a specific article or point, say for example: 'This article is not detailed in our current materials' or 'We do not have the full text of this article in our database'—never mention CONTEXT.\n";
+        if ($hasSuggestedLawyers) {
+            $base .= "6. Do NOT output markdown links to lawyers. Suggested lawyers will be shown separately. Only mention lawyer names and criteria (e.g. 'Here are some lawyers that may suit your needs' or briefly describe filters). Do not invent any lawyer IDs or URLs.\n";
+        } else {
+            $base .= "6. When listing lawyers, use ONLY links that appear in CONTEXT; do not create or change any ID.\n";
+        }
+
+        $contextLabel = $contextString === '' ? "NO DATA" : $contextString;
 
         switch ($intent) {
             case 'PRICE':
@@ -145,26 +169,26 @@ class AiBotController extends Controller
                 $instruction = "List and briefly describe practice areas/specialties from CONTEXT. Guide the user to the Find Lawyers page to filter by specialty.";
                 break;
             case 'EXPERIENCE':
-                $instruction = "Explain how experience is shown (years, profile). Use CONTEXT if it contains concrete numbers; otherwise guide the user to lawyer profiles.";
+                $instruction = "Explain how experience is shown (years, profile). Use CONTEXT if it contains concrete numbers. Do not output lawyer links; suggested lawyers will be shown separately. Keep the reply short.";
                 break;
             case 'BOOKING':
                 $instruction = "Describe step-by-step how to book an appointment using CONTEXT. Do not output raw URLs; describe navigation (e.g. 'Go to Find Lawyers on the menu, choose a lawyer, then click Book appointment').";
                 break;
             case 'LEGAL_KNOWLEDGE':
-                $instruction = "Answer using only the legal text in CONTEXT. Cite source/law name and article where relevant. End with a suggestion to consult a lawyer for their specific case.";
+                $instruction = "Answer using only the legal text in CONTEXT. Reply in the same language as the user's question (Vietnamese or English). Cite source/law name and article where relevant. If a specific article is not in the materials provided, say 'This article is not detailed in our current materials' or skip it—never write 'no information in CONTEXT' or mention CONTEXT to the user. Always end by suggesting the user to find a lawyer on LegalEase (our Find Lawyers page on this site). Do not recommend other platforms or external search.";
                 break;
             case 'FIND_LAWYER':
-                $instruction = "Suggest suitable lawyers from CONTEXT. If CONTEXT lists lawyers, present them clearly with name and link format [Name](/lawyers/{id}). Otherwise tell the user to use the Find Lawyers page and filters.";
+                $instruction = "Suggest suitable lawyers from CONTEXT. Reply in the same language as the user's question (Vietnamese or English). Do not output markdown links; suggested lawyers will be shown separately. Write a short intro and briefly describe the criteria. Otherwise tell the user to use the Find Lawyers page and filters.";
                 break;
             case 'GREETING':
-                $instruction = "Give a short, friendly greeting and offer help with lawyer info, prices, locations, specialties, booking, or legal knowledge.";
+                $instruction = "Give a short, friendly greeting in the same language as the user (Vietnamese or English) and offer help with lawyer info, prices, locations, specialties, booking, or legal knowledge.";
                 break;
             case 'GENERAL':
             default:
                 if ($contextLabel !== "NO DATA") {
-                    $instruction = "Answer based on CONTEXT. If the question is about legal/lawyer/booking topics, use CONTEXT. Keep the reply in English.";
+                    $instruction = "Answer based on CONTEXT. If the question is about legal/lawyer/booking topics, use CONTEXT. Reply in the same language as the user's question. Always suggest finding a lawyer on LegalEase (Find Lawyers on this site), never other platforms.";
                 } else {
-                    $instruction = "Politely decline: 'I can only help with LegalEase services—lawyer information, prices, locations, specialties, experience, how to book, and general legal knowledge. Please ask something related to our services.'";
+                    $instruction = "Politely decline in the user's language (Vietnamese or English): e.g. 'I can only help with LegalEase services—lawyer information, prices, locations, specialties, experience, how to book, and general legal knowledge. Please ask something related to our services.'";
                 }
                 break;
         }
@@ -275,7 +299,8 @@ class AiBotController extends Controller
     }
 
     /** Experience: short guidance + sample from lawyer_profiles */
-    private function queryExperienceContext(): string
+    /** @return array{context: string, lawyers: \Illuminate\Support\Collection} */
+    private function queryExperienceContext(): array
     {
         $lawyers = LawyerProfile::where('isverified', true)
             ->whereNotNull('experienceyears')
@@ -284,16 +309,22 @@ class AiBotController extends Controller
             ->get(['lawyerid', 'fullname', 'experienceyears']);
 
         if ($lawyers->isEmpty()) {
-            return "Experience is shown on each lawyer's profile. Go to Find Lawyers, open a lawyer's profile, and check their experience there.";
+            return [
+                'context' => "Experience is shown on each lawyer's profile. Go to Find Lawyers, open a lawyer's profile, and check their experience there.",
+                'lawyers' => collect([]),
+            ];
         }
 
         $lines = [];
         foreach ($lawyers as $l) {
             $y = (int) $l->experienceyears;
-            $lines[] = $l->fullname . " (" . $y . " year(s)) – profile: /lawyers/" . $l->lawyerid;
+            $lines[] = $l->fullname . " (ID: {$l->lawyerid}, " . $y . " year(s))";
         }
-        return "Some of our lawyers and their experience (years):\n" . implode("\n", $lines) .
-            "\n\nYou can see every lawyer's experience on their profile page.";
+        return [
+            'context' => "Some of our lawyers and their experience (years):\n" . implode("\n", $lines) .
+                "\n\nYou can see every lawyer's experience on their profile page.",
+            'lawyers' => $lawyers,
+        ];
     }
 
     /** How to book: from ContentManagement or fixed English steps */
@@ -325,37 +356,36 @@ class AiBotController extends Controller
             "5. Confirm your booking. You will need to log in or register if you have not already.";
     }
 
-    /** Search legal_knowledge_base; uses keyword variants and fallback to improve match rate. */
-    private function queryLegalKnowledgeBase(array $keywords): string
+    /**
+     * Search legal_knowledge_base using FULLTEXT(content) when possible for speed, then LIKE fallback.
+     * Uses idx_specid when specid can be inferred from keywords. Supports Vietnamese via Vi→En term map.
+     */
+    private function queryLegalKnowledgeBase(array $keywords, string $question = ''): string
     {
-        $terms = $this->expandSearchTerms($keywords);
+        $allKeywords = $keywords;
+        if ($question !== '') {
+            $englishFromVietnamese = $this->getEnglishTermsFromVietnameseQuestion($question);
+            $allKeywords = array_values(array_unique(array_merge($keywords, $englishFromVietnamese)));
+        }
+        $terms = $this->expandSearchTerms($allKeywords);
         if (empty($terms)) {
             return "";
         }
 
-        $results = LegalKnowledgeBase::where(function ($query) use ($terms) {
-            foreach ($terms as $word) {
-                $w = trim($word);
-                if ($w === '') continue;
-                $query->orWhere('title', 'like', '%' . $w . '%')
-                    ->orWhere('content', 'like', '%' . $w . '%')
-                    ->orWhere('lawname', 'like', '%' . $w . '%');
-            }
-        })->limit(8)->get();
+        $specid = $this->resolveSpecidFromKeywords($allKeywords);
 
-        if ($results->isEmpty() && count($keywords) > 2) {
-            $fallback = array_slice(array_filter($keywords, fn($k) => mb_strlen($k) >= 4), 0, 4);
+        $results = $this->searchLegalKnowledgeBaseFulltext($terms, $specid, 12);
+        if ($results->isEmpty()) {
+            $results = $this->searchLegalKnowledgeBaseLike($terms, $specid, 12);
+        }
+        if ($results->isEmpty() && count($allKeywords) > 2) {
+            $fallback = array_slice(array_filter($allKeywords, fn($k) => mb_strlen($k) >= 4), 0, 4);
             $fallbackTerms = $this->expandSearchTerms($fallback);
             if (!empty($fallbackTerms)) {
-                $results = LegalKnowledgeBase::where(function ($query) use ($fallbackTerms) {
-                    foreach ($fallbackTerms as $w) {
-                        $w = trim($w);
-                        if ($w === '') continue;
-                        $query->orWhere('title', 'like', '%' . $w . '%')
-                            ->orWhere('content', 'like', '%' . $w . '%')
-                            ->orWhere('lawname', 'like', '%' . $w . '%');
-                    }
-                })->limit(8)->get();
+                $results = $this->searchLegalKnowledgeBaseFulltext($fallbackTerms, $specid, 12);
+                if ($results->isEmpty()) {
+                    $results = $this->searchLegalKnowledgeBaseLike($fallbackTerms, $specid, 12);
+                }
             }
         }
 
@@ -369,6 +399,57 @@ class AiBotController extends Controller
             $context .= "Source: {$item->lawname}\nTitle: {$item->title}\nContent: {$short}\n\n";
         }
         return trim($context);
+    }
+
+    /** Resolve specid from keywords (match specialization name) to use idx_specid. */
+    private function resolveSpecidFromKeywords(array $keywords): ?int
+    {
+        if (empty($keywords)) {
+            return null;
+        }
+        foreach (Specialization::all() as $s) {
+            foreach ($keywords as $kw) {
+                if (mb_strlen($kw) >= 2 && mb_stripos($s->specname, $kw) !== false) {
+                    return (int) $s->specid;
+                }
+            }
+        }
+        return null;
+    }
+
+    /** Search using FULLTEXT(content) index; terms with length >= 3. Returns collection. */
+    private function searchLegalKnowledgeBaseFulltext(array $terms, ?int $specid, int $limit)
+    {
+        $fulltextTerms = array_values(array_filter(array_map('trim', $terms), fn($t) => mb_strlen($t) >= 3));
+        if (empty($fulltextTerms)) {
+            return collect([]);
+        }
+        $searchString = implode(' ', array_unique($fulltextTerms));
+        $query = LegalKnowledgeBase::whereRaw('MATCH(content) AGAINST(? IN NATURAL LANGUAGE MODE)', [$searchString])
+            ->orderByRaw('MATCH(content) AGAINST(? IN NATURAL LANGUAGE MODE) DESC', [$searchString])
+            ->limit($limit);
+        if ($specid !== null) {
+            $query->where('specid', $specid);
+        }
+        return $query->get();
+    }
+
+    /** Fallback: search with LIKE on title, content, lawname (when FULLTEXT returns nothing). */
+    private function searchLegalKnowledgeBaseLike(array $terms, ?int $specid, int $limit)
+    {
+        $query = LegalKnowledgeBase::where(function ($q) use ($terms) {
+            foreach ($terms as $word) {
+                $w = trim($word);
+                if ($w === '') continue;
+                $q->orWhere('title', 'like', '%' . $w . '%')
+                    ->orWhere('content', 'like', '%' . $w . '%')
+                    ->orWhere('lawname', 'like', '%' . $w . '%');
+            }
+        })->limit($limit);
+        if ($specid !== null) {
+            $query->where('specid', $specid);
+        }
+        return $query->get();
     }
 
     /** Add simple variants (e.g. defective->defect, products->product) to improve match in legal_knowledge_base. */
@@ -393,8 +474,126 @@ class AiBotController extends Controller
         return array_keys($out);
     }
 
-    /** Find lawyers by location/specialty for context */
-    private function queryLawyersForContext(string $question, array $keywords)
+    /**
+     * Vietnamese → English legal term map so Vietnamese questions can match English chunks in legal_knowledge_base.
+     * Keys: Vietnamese phrase (longer phrases first when matching). Values: English terms to search.
+     */
+    private function getVietnameseToEnglishLegalTerms(): array
+    {
+        return [
+            // Marriage & family (longer phrases first)
+            'luật hôn nhân gia đình' => ['marriage', 'family', 'family law', 'marriage and family'],
+            'thủ tục ly hôn' => ['divorce', 'divorce procedure', 'dissolution', 'marriage', 'dissolution of marriage'],
+            'ly hôn' => ['divorce', 'dissolution', 'dissolution of marriage'],
+            'hôn nhân gia đình' => ['marriage', 'family', 'family law'],
+            'hôn nhân' => ['marriage', 'marital', 'marriage and family'],
+            'gia đình' => ['family', 'family law'],
+            'thủ tục' => ['procedure', 'procedures'],
+            'kết hôn' => ['marriage', 'marry', 'marital'],
+            'tranh chấp' => ['dispute', 'disputes', 'dispute resolution'],
+            'nuôi con' => ['child', 'children', 'custody', 'parenting'],
+            'cấp dưỡng' => ['maintenance', 'alimony', 'support'],
+            'tài sản chung' => ['property', 'matrimonial', 'joint property'],
+            // Consumer & civil (existing)
+            'trách nhiệm pháp lý' => ['liability', 'legal responsibility'],
+            'sản phẩm có khuyết tật' => ['defective product', 'defective products'],
+            'trách nhiệm sản phẩm' => ['product liability'],
+            'bồi thường thiệt hại' => ['compensation', 'damages'],
+            'quy định pháp luật' => ['regulation', 'legal provision', 'law'],
+            'hợp đồng' => ['contract', 'contracts'],
+            'bồi thường' => ['compensation', 'damages'],
+            'sản phẩm' => ['product', 'products'],
+            'khuyết tật' => ['defect', 'defective', 'defects'],
+            'lỗi' => ['defect', 'fault', 'faulty'],
+            'trách nhiệm' => ['liability', 'responsibility'],
+            'quy định' => ['regulation', 'provision', 'provisions'],
+            'điều khoản' => ['article', 'clause', 'articles', 'clauses'],
+            'luật' => ['law', 'legal'],
+            'văn bản pháp luật' => ['law', 'legal document', 'regulation'],
+            'người tiêu dùng' => ['consumer', 'consumers'],
+            'chất lượng' => ['quality', 'standards'],
+            'tiêu chuẩn' => ['standard', 'standards', 'technical'],
+            'kỹ thuật' => ['technical', 'standards'],
+            'bảo hành' => ['warranty', 'guarantee'],
+            'bảo đảm' => ['guarantee', 'warranty'],
+            'khiếu nại' => ['claim', 'complaint', 'claims'],
+            'thiệt hại' => ['damage', 'damages'],
+            'nghĩa vụ' => ['obligation', 'obligations'],
+            'dân sự' => ['civil'],
+            'vi phạm' => ['violation', 'breach', 'fault'],
+            'thương mại' => ['commercial', 'trade'],
+            'đòi bồi thường' => ['compensation', 'claim', 'damages'],
+            'quyền' => ['right', 'rights'],
+            'pháp lý' => ['legal', 'liability'],
+            'pháp luật' => ['law', 'legal'],
+            'điều luật' => ['article', 'clause', 'provision'],
+            'chứng minh' => ['proof', 'prove', 'evidence'],
+            'chứng cứ' => ['evidence', 'proof'],
+        ];
+    }
+
+    /**
+     * From a question (Vietnamese or mixed), extract English equivalent terms using the Vi→En map.
+     * Used so that Vietnamese questions can match English-only content in legal_knowledge_base.
+     */
+    private function getEnglishTermsFromVietnameseQuestion(string $question): array
+    {
+        $q = mb_strtolower(trim($question));
+        $map = $this->getVietnameseToEnglishLegalTerms();
+        $keys = array_keys($map);
+        usort($keys, fn($a, $b) => mb_strlen($b) - mb_strlen($a));
+
+        $englishTerms = [];
+        foreach ($keys as $vietnamesePhrase) {
+            if (mb_strpos($q, $vietnamesePhrase) !== false) {
+                $englishTerms = array_merge($englishTerms, $map[$vietnamesePhrase]);
+            }
+        }
+        return array_values(array_unique($englishTerms));
+    }
+
+    /**
+     * Resolve specialization from question: direct specname match, keyword match, or Vietnamese→English specialty map
+     * (e.g. "hôn nhân gia đình" → spec with "marriage" or "family" in name).
+     */
+    private function resolveSpecializationFromQuestion(string $question, array $keywords): ?Specialization
+    {
+        $q = mb_strtolower($question);
+        $specs = Specialization::all();
+
+        foreach ($specs as $s) {
+            if (mb_stripos($q, mb_strtolower($s->specname)) !== false) {
+                return $s;
+            }
+        }
+        if (!empty($keywords)) {
+            foreach ($specs as $s) {
+                foreach ($keywords as $kw) {
+                    if (mb_strlen($kw) >= 2 && mb_stripos($s->specname, $kw) !== false) {
+                        return $s;
+                    }
+                }
+            }
+        }
+        foreach ($specs as $s) {
+            $specLower = mb_strtolower($s->specname);
+            if (mb_strpos($q, 'hôn nhân') !== false || mb_strpos($q, 'gia đình') !== false) {
+                if (mb_strpos($specLower, 'marriage') !== false || mb_strpos($specLower, 'family') !== false) {
+                    return $s;
+                }
+            }
+            if (mb_strpos($q, 'thương mại') !== false && mb_strpos($specLower, 'commercial') !== false) {
+                return $s;
+            }
+            if (mb_strpos($q, 'tiêu dùng') !== false && mb_strpos($specLower, 'consumer') !== false) {
+                return $s;
+            }
+        }
+        return null;
+    }
+
+    /** Find lawyers by location/specialty for context. Returns [context, lawyers]. */
+    private function queryLawyersForContext(string $question, array $keywords): array
     {
         $q = LawyerProfile::with(['office.location', 'specializations'])
             ->where('isverified', true);
@@ -412,23 +611,7 @@ class AiBotController extends Controller
             $q->whereHas('office', fn($o) => $o->where('locid', $loc->locid));
         }
 
-        $spec = null;
-        foreach (Specialization::all() as $s) {
-            if (mb_stripos($question, $s->specname) !== false) {
-                $spec = $s;
-                break;
-            }
-        }
-        if (!$spec && !empty($keywords)) {
-            foreach (Specialization::all() as $s) {
-                foreach ($keywords as $kw) {
-                    if (mb_stripos($s->specname, $kw) !== false) {
-                        $spec = $s;
-                        break 2;
-                    }
-                }
-            }
-        }
+        $spec = $this->resolveSpecializationFromQuestion($question, $keywords);
 
         if ($spec) {
             $q->whereHas('specializations', fn($s) => $s->where('specializations.specid', $spec->specid));
@@ -445,35 +628,61 @@ class AiBotController extends Controller
         }
 
         if ($lawyers->isEmpty()) {
-            return "No lawyers match your criteria. Please try the Find Lawyers page and use filters for location and specialty.";
+            return [
+                'context' => "No lawyers match your criteria. Please try the Find Lawyers page and use filters for location and specialty.",
+                'lawyers' => collect([]),
+            ];
         }
 
         $lines = [];
         foreach ($lawyers as $l) {
             $specs = $l->specializations->pluck('specname')->implode(', ');
             $locStr = $l->office && $l->office->location ? $l->office->location->cityname : '';
-            $lines[] = "[{$l->fullname}](/lawyers/{$l->lawyerid}) – " . ($specs ?: 'General') . ($locStr ? " – {$locStr}" : '');
+            $lines[] = "{$l->fullname} (ID: {$l->lawyerid}) – " . ($specs ?: 'General') . ($locStr ? " – {$locStr}" : '');
         }
-        return "Suggested lawyers:\n" . implode("\n", $lines);
+        return [
+            'context' => "Suggested lawyers:\n" . implode("\n", $lines),
+            'lawyers' => $lawyers,
+        ];
+    }
+
+    /** @param \Illuminate\Support\Collection $lawyers Collection of LawyerProfile (lawyerid, fullname). */
+    private function formatSuggestedLawyers($lawyers): array
+    {
+        if ($lawyers->isEmpty()) {
+            return [];
+        }
+        return $lawyers->map(fn($l) => [
+            'id' => (int) $l->lawyerid,
+            'fullname' => $l->fullname ?? '',
+            'profile_url' => '/lawyers/' . $l->lawyerid,
+        ])->values()->all();
     }
 
     private function extractKeywords(string $question): array
     {
-        $str = mb_strtolower(preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $question));
-        $stopWords = [
-            'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had',
-            'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'shall',
-            'can', 'need', 'dare', 'ought', 'used', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by',
-            'from', 'as', 'into', 'through', 'during', 'before', 'after', 'above', 'below',
-            'me', 'my', 'myself', 'we', 'our', 'you', 'your', 'he', 'him', 'his', 'she', 'her', 'it', 'its',
-            'they', 'them', 'their', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those',
-            'am', 'get', 'please', 'tell', 'want', 'know', 'like', 'just', 'about', 'and', 'or', 'but', 'if', 'then',
-            'yes', 'no', 'ok', 'okay', 'yeah', 'hey', 'hi', 'hello'
-        ];
-        $words = array_filter(preg_split('/\s+/', $str), function ($w) use ($stopWords) {
-            return !in_array($w, $stopWords) && mb_strlen($w) >= 2;
-        });
-        return array_values(array_slice(array_values($words), 0, 10));
+    $str = mb_strtolower(preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $question));
+
+    $stopWords = [
+        'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had',
+        'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'shall',
+        'can', 'need', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from', 'as', 'what', 
+        'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'please', 'tell', 'want', 
+        'know', 'like', 'just', 'about', 'and', 'or', 'but', 'if', 'then',
+
+        'là', 'và', 'của', 'cho', 'các', 'những', 'có', 'không', 'được', 'trong', 'với', 'tại', 
+        'theo', 'để', 'từ', 'này', 'kia', 'đó', 'thế', 'ra', 'vào', 'lên', 'xuống', 'lại', 'qua', 
+        'mới', 'còn', 'như', 'khi', 'nào', 'vậy', 'nhé', 'nha', 'đâu', 'cái', 'chiếc', 'sự', 'việc',
+
+        'luật', 'luật sư', 'lawyer', 'law', 'giá', 'phí', 'tiền', 'bao', 'nhiêu', 'nhiều', 
+        'hỏi', 'xin', 'cho', 'biết', 'cách', 'làm', 'sao', 'price', 'cost', 'fee', 'how', 'much'
+    ];
+
+    $words = array_filter(preg_split('/\s+/', $str), function ($w) use ($stopWords) {
+        return !in_array($w, $stopWords) && mb_strlen($w) >= 2;
+    });
+
+    return array_values(array_slice(array_unique($words), 0, 10));
     }
 
     private function containsAny(string $str, array $keywords): bool
@@ -484,6 +693,34 @@ class AiBotController extends Controller
             }
         }
         return false;
+    }
+
+    /**
+     * Sanitize lawyer links in AI answer: when stripAll true, remove all markdown links to /lawyers/id (frontend uses suggested_lawyers).
+     * When stripAll false, validate each /lawyers/{id}; remove or replace invalid IDs so only verified lawyers remain.
+     */
+    private function sanitizeLawyerLinksInAnswer(string $answer, bool $stripAll = false): string
+    {
+        if ($stripAll) {
+            return preg_replace_callback('/\[([^\]]*)\]\(\s*\/lawyers\/\d+\s*\)/u', fn($m) => $m[1], $answer);
+        }
+        preg_match_all('/\/lawyers\/(\d+)/', $answer, $matches);
+        $ids = array_unique($matches[1] ?? []);
+        $invalidIds = [];
+        foreach ($ids as $id) {
+            $valid = LawyerProfile::where('lawyerid', (int) $id)->where('isverified', true)->exists();
+            if (!$valid) {
+                $invalidIds[] = $id;
+            }
+        }
+        if (empty($invalidIds)) {
+            return $answer;
+        }
+        foreach ($invalidIds as $id) {
+            $answer = preg_replace('/\[([^\]]*)\]\(\s*\/lawyers\/' . preg_quote($id, '/') . '\s*\)/u', '$1 (no longer in our system)', $answer);
+            $answer = preg_replace('/\/lawyers\/' . preg_quote($id, '/') . '\b/u', '(no longer in our system)', $answer);
+        }
+        return $answer;
     }
 
     private function callLlamaApi(string $systemPrompt, string $userMessage): string
@@ -505,7 +742,7 @@ class AiBotController extends Controller
                 ['role' => 'system', 'content' => $systemPrompt],
                 ['role' => 'user', 'content' => $userMessage],
             ],
-            'temperature' => 0.2,
+            'temperature' => 0.3,
             'max_tokens'  => 1000,
         ]);
 
